@@ -1,0 +1,5 @@
+﻿  Application.cpp
+C:\Users\sidwa\OneDrive - Hochschule Osnabrück\pls\Praktikum04_Transofrmationen\src\Application.h(22,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
+C:\Users\sidwa\OneDrive - Hochschule Osnabrück\pls\Praktikum04_Transofrmationen\src\Application.cpp(42,23): warning C4101: "boxModel": Unreferenzierte lokale Variable
+C:\Users\sidwa\OneDrive - Hochschule Osnabrück\pls\Praktikum04_Transofrmationen\src\Application.cpp(335,35): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
+  CGVStudio.vcxproj -> C:\Users\sidwa\OneDrive - Hochschule Osnabrück\pls\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

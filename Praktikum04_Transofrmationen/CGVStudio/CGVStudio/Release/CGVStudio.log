@@ -1,0 +1,48 @@
+﻿  Aabb.cpp
+  Application.cpp
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Application.cpp(40,21): warning C4101: 'pConstShader': unreferenced local variable
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Application.cpp(39,16): warning C4101: 'pModel': unreferenced local variable
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Application.cpp(97,35): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Application.cpp(136,51): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Application.cpp(136,47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  BaseModel.cpp
+  BaseShader.cpp
+  Camera.cpp
+  color.cpp
+  ConstantShader.cpp
+  IndexBuffer.cpp
+  LineBoxModel.cpp
+  LinePlaneModel.cpp
+  main.cpp
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\main.cpp(58,32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Matrix.cpp
+  Model.cpp
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Model.cpp(101,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Model.cpp(108,37): warning C4018: '<': signed/unsigned mismatch
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Model.cpp(145,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Model.cpp(148,35): warning C4018: '<': signed/unsigned mismatch
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Model.cpp(166,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Model.cpp(172,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Model.cpp(208,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\Model.cpp(209,27): warning C4018: '<': signed/unsigned mismatch
+  PhongShader.cpp
+  rgbimage.cpp
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\rgbimage.cpp(45,11): warning C4244: '=': conversion from 'float' to 'char', possible loss of data
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\rgbimage.cpp(51,9): warning C4309: '=': truncation of constant value
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\rgbimage.cpp(146,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\src\rgbimage.cpp(147,21): warning C4018: '<': signed/unsigned mismatch
+  Scene.cpp
+  Tank.cpp
+  Texture.cpp
+  TriangleBoxModel.cpp
+  TrianglePlaneModel.cpp
+  Compiling...
+  TriangleSphereModel.cpp
+  vector.cpp
+  VertexBuffer.cpp
+  Generating code
+  947 of 961 functions (98.5%) were compiled, the rest were copied from previous compilation.
+    2 functions were new in current compilation
+    2 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  CGVStudio.vcxproj -> C:\Users\nktrc\OneDrive\VSWorkspace\HS-Computergrafik\Praktikum04_Transofrmationen\CGVStudio\Release\Praktikum04_Transofrmationen.exe
