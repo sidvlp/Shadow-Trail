@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "Application.h"
 #include "freeimage.h"
-
+//test 2
 void PrintOpenGLVersion();
 
 
