@@ -56,7 +56,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     Level level(10, 10); 
     auto path = level.generatePath();
 
-    float startX = 0.0f;
+    float startX = -4.5f;
     float startY = 0.0f;
     float startZ = -4.5f;
 
@@ -76,6 +76,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
         box->calculateBoundingBox();
 
         Models.push_back(box);
+        std::cout << "Plattform: (" << plattform->x << ", " << plattform->z << ")" << std::endl;
     }
     /*
     pModel = new TriangleBoxModel(1, 1, 1);
@@ -241,6 +242,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
    
+    
 
     pModel = new TrianglePlaneModel(10, 5, 1, 1);
     pModel->isEndPlatform = true;
