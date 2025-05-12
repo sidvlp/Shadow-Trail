@@ -24,8 +24,10 @@
 #include "scene.h"
 #include "../CGVStudio/CGVStudio/ShaderLightMapper.h"
 
+
 #define _USE_MATH_DEFINES
 #include "math.h"
+#include "../CGVStudio/CGVStudio/Level.h"
 
 #ifdef WIN32
 #define ASSET_DIRECTORY "../../assets/"
@@ -51,8 +53,31 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     pConstShader = new ConstantShader();
     pConstShader->color(Color(0,0,1));
 
+    Level level(10, 10); 
+    auto path = level.generatePath();
+
+    float startX = 0.0f;
+    float startY = 0.0f;
+    float startZ = -4.5f;
+
     pPhongShader = new PhongShader();
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "brick.jpg"));
+    
+    for (auto plattform : path) {
+        TriangleBoxModel* box = new TriangleBoxModel(1, 1, 1);
+        box->shader(pPhongShader, true);
+
+        Matrix translation;
+        float x = startX + static_cast<float>(plattform->x);
+        float z = startZ + static_cast<float>(plattform->z);
+        translation.translation(x, startY, z);
+
+        box->transform(box->transform() * translation);
+        box->calculateBoundingBox();
+
+        Models.push_back(box);
+    }
+    /*
     pModel = new TriangleBoxModel(1, 1, 1);
     pModel->shader(pPhongShader, true);
     translation.translation(0, 0, -4.5);
@@ -122,6 +147,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     pModel->transform(pModel->transform() * translation);
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
+    */
 
    // pModel = new Model(ASSET_DIRECTORY "13463_Australian_Cattle_Dog_v3.obj");
   //  pModel = new Model(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");s
