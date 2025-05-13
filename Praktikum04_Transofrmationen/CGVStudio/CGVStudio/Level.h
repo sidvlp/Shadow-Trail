@@ -17,3 +17,4 @@ class Level
     bool hasGoodNeighborhood(Plattform* p);
 };
 
+
