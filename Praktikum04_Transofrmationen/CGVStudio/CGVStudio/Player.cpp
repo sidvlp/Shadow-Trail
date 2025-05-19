@@ -229,7 +229,7 @@ bool Player::checkGroundCollision(std::list<BaseModel*>& models)
 				(this->BoundingBox.Min.Y <= modelBox.Max.Y && this->BoundingBox.Max.Y >= modelBox.Min.Y) &&
 				(this->BoundingBox.Min.Z <= modelBox.Max.Z && this->BoundingBox.Max.Z >= modelBox.Min.Z);
 			if (groundCollision) {
-				std::cout << "Collision detected" << std::endl;
+				//std::cout << "Collision detected" << std::endl;
 				if (model->isEndPlatform) {
 					std::cout << "Ende erreicht" << std::endl;
 				}
