@@ -53,12 +53,17 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     pConstShader = new ConstantShader();
     pConstShader->color(Color(0,0,1));
 
-    Level level(10, 10); 
-    auto path = level.generatePath();
+    int width = 10;
+    int height = 10;
 
-    float startX = -4.5f;
+    Level level(width, height); 
+    level.generatePathWithLights();
+
+    auto& path = level.getPath();
+
+    float startX = -((width - 1) / 2.0f);
     float startY = 0.0f;
-    float startZ = -4.5f;
+    float startZ = -((height - 1) / 2.0f);
 
     pPhongShader = new PhongShader();
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "brick.jpg"));
@@ -68,87 +73,36 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
         box->shader(pPhongShader, true);
 
         Matrix translation;
-        float x = startX + static_cast<float>(plattform->x);
-        float z = startZ + static_cast<float>(plattform->z);
+        float x = startX + plattform->x;
+        float z = startZ + plattform->z;
         translation.translation(x, startY, z);
 
         box->transform(box->transform() * translation);
         box->calculateBoundingBox();
-
         Models.push_back(box);
-        std::cout << "Plattform: (" << plattform->x << ", " << plattform->z << ")" << std::endl;
+
+        std::cout << (plattform->isLight ? "Licht" : "Pfad")
+            << " Plattform: (" << plattform->x << ", " << plattform->z << ")" << std::endl;
+
+        if (plattform->isLight) {
+            // Feuerkugel
+            PhongShader* fireShader = new PhongShader();
+            fireShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
+
+            TriangleSphereModel* fire = new TriangleSphereModel(0.5f);
+            Matrix fireTranslation;
+            fireTranslation.translation(x, startY + 1.0f, z);  // Y+1 für "über der Plattform"
+            fire->transform(fire->transform() * fireTranslation);
+            fire->shader(fireShader, true);
+            fire->calculateBoundingBox();
+            Models.push_back(fire);
+
+            // Punktlicht
+            PointLight* fireLight = new PointLight(Vector(x, startY + 1.0f, z), Color(1.0f, 0.5f, 0.2f));
+            fireLight->attenuation(Vector(1.0f, 0.1f, 0.05f));  // optional feinjustieren
+            ShaderLightMapper::instance().addLight(fireLight);
+        }
     }
-    /*
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, -4.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, -3.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, -2.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, -1.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, -0.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, 0.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, 1.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, 2.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, 3.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    pModel = new TriangleBoxModel(1, 1, 1);
-    pModel->shader(pPhongShader, true);
-    translation.translation(0, 0, 4.5);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-    */
 
    // pModel = new Model(ASSET_DIRECTORY "13463_Australian_Cattle_Dog_v3.obj");
   //  pModel = new Model(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");s
@@ -231,20 +185,23 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     this->chassis->transform(chassisMatrix);
     */
 
+   // float centerX = startX + width / 2.0f; 
+    //float centerZ = startZ + height / 2.0f;
+
     pPhongShader = new PhongShader();
-    pModel = new TrianglePlaneModel(10, 5, 1,1);
+    pModel = new TrianglePlaneModel(width, 5, 1,1);
     pConstShader = new ConstantShader();
     pConstShader->color(Color(1, 0, 0));
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "brick_platform.jpg"));
     pModel->shader(pPhongShader, true);
-    translation.translation(0, 0.5, 7.5);
+    translation.translation(0, 0.5f, 7.5);
     pModel->transform(pModel->transform() * translation);
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
    
     
 
-    pModel = new TrianglePlaneModel(10, 5, 1, 1);
+    pModel = new TrianglePlaneModel(width, 5, 1, 1);
     pModel->isEndPlatform = true;
     pConstShader = new ConstantShader();
     pConstShader->color(Color(1, 0, 0));
