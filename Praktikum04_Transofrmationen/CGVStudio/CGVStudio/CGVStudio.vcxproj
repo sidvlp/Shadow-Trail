@@ -109,6 +109,8 @@
     <ClCompile Include="..\..\src\TriangleSphereModel.cpp" />
     <ClCompile Include="..\..\src\vector.cpp" />
     <ClCompile Include="..\..\src\VertexBuffer.cpp" />
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="Plattform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShaderLightMapper.cpp" />
   </ItemGroup>
@@ -135,7 +137,9 @@
     <ClInclude Include="..\..\src\TriangleSphereModel.h" />
     <ClInclude Include="..\..\src\vector.h" />
     <ClInclude Include="..\..\src\VertexBuffer.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="Lights.h" />
+    <ClInclude Include="Plattform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderLightMapper.h" />
   </ItemGroup>
