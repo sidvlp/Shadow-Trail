@@ -28,6 +28,9 @@ public:
     virtual void calculateBoundingBox() = 0;
     virtual AABB& getBoundingBox() = 0;
     bool isEndPlatform;
+
+    bool isPath = false;
+
 protected:
     Matrix Transform;
     BaseShader* pShader;

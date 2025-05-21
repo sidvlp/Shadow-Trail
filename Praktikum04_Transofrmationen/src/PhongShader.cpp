@@ -77,6 +77,9 @@ uniform vec3 SpecularColor;
 uniform vec3 AmbientColor;
 uniform float SpecularExp;
 uniform sampler2D DiffuseTexture;
+uniform float time;         
+uniform bool isDarkPath;     
+
 
 const int MAX_LIGHTS = 14;
 
@@ -98,6 +101,13 @@ layout(std140) uniform Lights {
 float sat(float a) {
     return clamp(a, 0.0, 1.0);
 }
+
+float getPathVisibility(float t) {
+    float interval = 4.0; 
+    float localT = mod(t, 2.0 * interval);
+    return localT < interval ? 1.0 : 0.0;
+}
+
 
 void main() {
     vec3 N = normalize(Normal);
@@ -130,17 +140,24 @@ void main() {
 
     result += (diffuse + specular) * texColor.rgb;
     
-float ringRadius = 2.0;           
-float ringThickness = 0.05;       
+    float ringRadius = 2.0;           
+    float ringThickness = 0.05;       
 
-float ringStart = ringRadius - ringThickness;
-if(dist >= ringStart && dist <= ringRadius) {
-    vec3 ringColor = vec3(0.0, 1.0, 0.0); // klares Grün
-    result += ringColor;
-}
-}
+    float ringStart = ringRadius - ringThickness;
+    if(dist >= ringStart && dist <= ringRadius) {
+        vec3 ringColor = vec3(0.0, 1.0, 0.0); // klares Grün
+        result += ringColor;
+    }
+    }
+
+    if(isDarkPath) {
+    float visibility = getPathVisibility(time);
+    result *= visibility;
+    }
+
 
     FragColor = vec4(result, texColor.a);
+
 }
 )";
 
@@ -202,6 +219,11 @@ void PhongShader::activate(const BaseCamera& Cam) const
     
     Vector EyePos = Cam.position();
     glUniform3f(EyePosLoc, EyePos.X, EyePos.Y, EyePos.Z );
+
+    glUniform1f(glGetUniformLocation(ShaderProgram, "time"), glfwGetTime());
+    glUniform1i(glGetUniformLocation(ShaderProgram, "isDarkPath"), isDarkPath ? 1 : 0);
+
+
     
     UpdateState = 0x0;
 
@@ -250,6 +272,11 @@ void PhongShader::diffuseTexture(const Texture* pTex)
     
     UpdateState |= DIFF_TEX_CHANGED;
 }
+
+void PhongShader::setDarkPath(bool dark) {
+    isDarkPath = dark;
+}
+
 
 
 

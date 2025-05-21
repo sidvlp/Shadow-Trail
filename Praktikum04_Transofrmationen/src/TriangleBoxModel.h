@@ -26,6 +26,7 @@ public:
     void boundingBox() ;
     void calculateBoundingBox();
     AABB& getBoundingBox();
+
 protected:
     VertexBuffer VB;
     IndexBuffer IB;

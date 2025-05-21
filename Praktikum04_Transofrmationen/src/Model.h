@@ -33,6 +33,7 @@ public:
     const void setBoundingBox(Vector newMin, Vector newMax);
     void calculateBoundingBox();
     AABB& getBoundingBox();
+
 protected: // protected types
     struct Mesh
     {

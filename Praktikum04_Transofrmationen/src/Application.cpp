@@ -65,12 +65,15 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     float startY = 0.0f;
     float startZ = -((height - 1) / 2.0f);
 
-    pPhongShader = new PhongShader();
-    pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "brick.jpg"));
     
     for (auto plattform : path) {
         TriangleBoxModel* box = new TriangleBoxModel(1, 1, 1);
-        box->shader(pPhongShader, true);
+
+        PhongShader* pathShader = new PhongShader();
+        pathShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "brick.jpg"));
+        box->shader(pathShader, true);
+
+        box->isPath = true;
 
         Matrix translation;
         float x = startX + plattform->x;
@@ -85,7 +88,10 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
             << " Plattform: (" << plattform->x << ", " << plattform->z << ")" << std::endl;
 
         if (plattform->isLight) {
+            box->isPath = false;
+
             // Feuerkugel
+
             PhongShader* fireShader = new PhongShader();
             fireShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
 
@@ -174,20 +180,6 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     light2->attenuation(Vector(1.0f, 0.01f, 0.002f));
     ShaderLightMapper::instance().addLight(light4);
 
-
-  
-    
-  /*  chassisUrsprung = chassis->transform();
-    chassisRot.rotationY(fb.Y * dtime);
-    chassisMov.translation(fb.X * dtime * 2, 0, 0);
-
-    chassisMatrix = chassisUrsprung * chassisMov * chassisRot;
-    this->chassis->transform(chassisMatrix);
-    */
-
-   // float centerX = startX + width / 2.0f; 
-    //float centerZ = startZ + height / 2.0f;
-
     pPhongShader = new PhongShader();
     pModel = new TrianglePlaneModel(width, 5, 1,1);
     pConstShader = new ConstantShader();
@@ -200,7 +192,6 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     Models.push_back(pModel);
    
     
-
     pModel = new TrianglePlaneModel(width, 5, 1, 1);
     pModel->isEndPlatform = true;
     pConstShader = new ConstantShader();
@@ -209,54 +200,6 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     translation.translation(0, 0.5, -7.5);
     pModel->transform(pModel->transform() * translation);
     Models.push_back(pModel);
-
-    //pModel = new TrianglePlaneModel(20, 6, 1, 1);
-    //pConstShader = new ConstantShader();
-    //pConstShader->color(Color(1, 0, 0));
-    //pModel->shader(pConstShader, true);
-    //Matrix rotY, rotZ;
-    //rotY.rotationY(toRadian(90));
-    //rotZ.rotationZ(toRadian(-90));
-    //translation.translation(-5, 3.5, 0);
-    //pModel->transform(pModel->transform()* translation * rotZ* rotY);
-    //pModel->calculateBoundingBox();
-    //Models.push_back(pModel);
-
-
-    //pModel = new TrianglePlaneModel(20, 6, 1, 1);
-    //pConstShader = new ConstantShader();
-    //pConstShader->color(Color(1, 0, 0));
-    //pModel->shader(pConstShader, true);
-    //rotY.rotationY(toRadian(90));
-    //rotZ.rotationZ(toRadian(90));
-    //translation.translation(5, 3.5, 0);
-    //pModel->transform(pModel->transform()* translation* rotZ* rotY);
-    //pModel->calculateBoundingBox();
-    //Models.push_back(pModel);
-
-   /* pModel = new TrianglePlaneModel(20, 6, 1, 1);
-    pConstShader = new ConstantShader();
-    pConstShader->color(Color(1, 0, 0));
-    pModel->shader(pConstShader, true);
-    Matrix rotY, rotZ;
-    rotY.rotationY(toRadian(90));
-    rotZ.rotationZ(toRadian(-90));
-    translation.translation(-5, 3.5, 0);
-    pModel->transform(pModel->transform()* translation * rotZ* rotY);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-
-    pModel = new TrianglePlaneModel(20, 6, 1, 1);
-    pConstShader = new ConstantShader();
-    pConstShader->color(Color(1, 0, 0));
-    pModel->shader(pConstShader, true);
-    rotY.rotationY(toRadian(90));
-    rotZ.rotationZ(toRadian(90));
-    translation.translation(5, 3.5, 0);
-    pModel->transform(pModel->transform()* translation* rotZ* rotY);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);*/
 
     /*chassisUrsprung = chassis->transform();
     chassisRot.rotationY(fb.Y * dtime);
@@ -325,58 +268,6 @@ float Application::toRadian(float degrees) {
 void Application::update(float dtime)
 {
 
-
-
-
-   /* // Exercise 1
-    Matrix pbot, pb1, pb2, pb3, ptop, pt1;
-
-    //anfangszustand
-    pbot.identity();
-    pb1.translation(4, 0, 0);
-    pb2.rotationY(toRadian(270));
-    //fahren in kreis
-    pb3.rotationY(-dtime);
-
-    pbot = pb3 * pb1 * pb2;
-    
-    pTankBot->transform(pbot);
-
-    
-    ptop.identity();
-    //cannon gegen rotieren
-    pt1.rotationY(dtime);
-
-    ptop = pbot * pt1;
-
-    pTankTop->transform(ptop);
-   */
-
-    // Exercise 2
-   /* Vector pos;
-
-    glfwGetCursorPos(pWindow,&mx,&my);
-    Vector collision = Application::calc3DRay(mx, my, pos);
-    pTank->aim(collision);
-    keyPress(fb, lr);
-    pTank->steer(fb, lr);
-    fb = 0;
-    lr = 0;
-    pTank->update(dtime);
-    Cam.update();*/
-
-    //for (ModelList::iterator it = Models.begin(); it != Models.end(); ++it)
-    //{
-    //    BaseModel* pModel = *it;
-    //   
-    //    if (pModel != player && player->checkGroundCollision(player->boundingBox(), pModel->getBoundingBox())) {
-    //        std::cout << "Kollision mit einem Objekt" << std::endl;
-    //    }
-    //    else {
-    //        std::cout << "Keine Kolliosnt" << std::endl;
-    //    }
-  
-    //}
     player->checkGroundCollision(Models);
 
     keyPress(fb, lr);
@@ -459,21 +350,37 @@ Vector Application::calc3DRay( float x, float y, Vector& Pos)
 void Application::draw()
 {
     // 1. clear screen
-    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-     ShaderLightMapper::instance().activate();
+    ShaderLightMapper::instance().activate();
 
-    // 2. setup shaders and draw models
-    for( ModelList::iterator it = Models.begin(); it != Models.end(); ++it )
+    // 2. setup shader für Pfad
+
+    for (auto it = Models.begin(); it != Models.end(); ++it)
     {
-        (*it)->draw(Cam);
+            PhongShader* shader = dynamic_cast<PhongShader*>((*it)->shader());
+            if (shader)
+            {
+                shader->setDarkPath((*it)->isPath);
+            }
         
+            (*it)->draw(Cam);
     }
-    
-    // 3. check once per frame for opengl errors
+
+
+
+
+
+
+
+
+
+    // 4. check for OpenGL errors
     GLenum Error = glGetError();
-    assert(Error==0);
+    assert(Error == 0);
 }
+
+
 void Application::end()
 {
     for( ModelList::iterator it = Models.begin(); it != Models.end(); ++it )

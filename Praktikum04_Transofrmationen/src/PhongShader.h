@@ -39,6 +39,7 @@ public:
     void diffuseTexture(const Texture* pTex);
     void lightPos( const Vector& pos);
     void lightColor(const Color& c);
+    void setDarkPath(bool dark);
     //getter
     const Color& diffuseColor() const { return DiffuseColor; }
     const Color& ambientColor() const { return AmbientColor; }
@@ -51,6 +52,9 @@ public:
     virtual void activate(const BaseCamera& Cam) const;
 private:
     void assignLocations();
+
+    bool isDarkPath;
+
     
     Color DiffuseColor;
     Color SpecularColor;

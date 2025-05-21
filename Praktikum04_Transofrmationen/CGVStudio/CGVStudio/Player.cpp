@@ -233,6 +233,7 @@ bool Player::checkGroundCollision(std::list<BaseModel*>& models)
 				if (model->isEndPlatform) {
 					std::cout << "Ende erreicht" << std::endl;
 				}
+
 				isGrounded = true;
 				isFalling = false;
 
