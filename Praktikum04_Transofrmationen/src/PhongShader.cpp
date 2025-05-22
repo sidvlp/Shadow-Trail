@@ -83,6 +83,8 @@ uniform bool isDarkPath;
 
 const int MAX_LIGHTS = 14;
 
+
+
 struct ShaderLight {
   int Type;
 	vec3 Color;
@@ -117,48 +119,55 @@ void main() {
 
     vec3 result = AmbientColor * texColor.rgb;
 
-   for(int i = 0; i < LightCount; i++) {
-    if(lights[i].Type != 0) continue; // Nur PointLights
+    bool insideAnyLightRadius = false;
 
+    for(int i = 0; i < LightCount; i++) {
+        if(lights[i].Type != 0) continue; // nur PointLights
 
-    vec3 L = lights[i].Position - Position;
-    float dist = length(L);
-    L = normalize(L);
+        vec3 L = lights[i].Position - Position;
+        float dist = length(L);
+        L = normalize(L);   
 
-    float att = 1.0 / (
-        lights[i].Attenuation.x +
-        lights[i].Attenuation.y * dist +
-        lights[i].Attenuation.z * dist * dist
-    );
+        float att = 1.0 / (
+            lights[i].Attenuation.x +
+            lights[i].Attenuation.y * dist +
+            lights[i].Attenuation.z * dist * dist 
+        );
 
-    float diff = sat(dot(N, L));
-    vec3 R = reflect(-L, N);
-    float spec = pow(sat(dot(R, E)), SpecularExp);
+        float diff = sat(dot(N, L));
+        vec3 R = reflect(-L, N);
+        float spec = pow(sat(dot(R, E)), SpecularExp);
 
-    vec3 diffuse = lights[i].Color * DiffuseColor * diff * att;
-    vec3 specular = lights[i].Color * SpecularColor * spec * att;
+        vec3 diffuse = lights[i].Color * DiffuseColor * diff * att;
+        vec3 specular = lights[i].Color * SpecularColor * spec * att;
 
-    result += (diffuse + specular) * texColor.rgb;
-    
-    float ringRadius = 2.0;           
-    float ringThickness = 0.05;       
+        result += (diffuse + specular) * texColor.rgb;
 
-    float ringStart = ringRadius - ringThickness;
-    if(dist >= ringStart && dist <= ringRadius) {
-        vec3 ringColor = vec3(0.0, 1.0, 0.0); // klares Grün
-        result += ringColor;
+        float minRadius = 1.0;
+        float maxRadius = 2;
+        float t = (sin(time * 1.5) + 1.0) * 0.5;
+        float ringRadius = minRadius + (maxRadius - minRadius) * t;
+        float ringThickness = 0.05;
+        float ringStart = ringRadius - ringThickness;
+
+        if(dist <= ringRadius)
+            insideAnyLightRadius = true;
+
+        // Grüner Ringeffekt
+        if(dist >= ringStart && dist <= ringRadius) {
+            vec3 ringColor = vec3(0.0, 1.0, 0.0);
+            result += ringColor;
+        }
     }
-    }
 
-    if(isDarkPath) {
-    float visibility = getPathVisibility(time);
-    result *= visibility;
+    if(isDarkPath && !insideAnyLightRadius) {
+         float visibility = getPathVisibility(time);
+            result *= visibility;
     }
-
 
     FragColor = vec4(result, texColor.a);
-
 }
+
 )";
 
 
