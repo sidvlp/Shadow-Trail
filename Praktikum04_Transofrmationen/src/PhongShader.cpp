@@ -104,13 +104,6 @@ float sat(float a) {
     return clamp(a, 0.0, 1.0);
 }
 
-float getPathVisibility(float t) {
-    float interval = 4.0; 
-    float localT = mod(t, 2.0 * interval);
-    return localT < interval ? 1.0 : 0.0;
-}
-
-
 void main() {
     vec3 N = normalize(Normal);
     vec3 E = normalize(EyePos - Position);
@@ -118,20 +111,54 @@ void main() {
     if(texColor.a < 0.3) discard;
 
     vec3 result = AmbientColor * texColor.rgb;
-
     bool insideAnyLightRadius = false;
 
+    // --- Zeitbasierte Animation ---
+    float growPhase = 2.0;
+    float brightPhase = 0.5;
+    float shrinkPhase = 2.0;
+    float darkPulsePhase = 4.0;
+    float cycleLength = growPhase + brightPhase + shrinkPhase + darkPulsePhase;
+
+    float tCycle = mod(time, cycleLength);
+
+    float ringRadius = 0.0;
+    bool fullSceneBright = false;
+    bool showPulsing = false;
+
+    // Harmonisches Pulsieren als kontinuierliche Funktion
+    float pulse = sin(time * 3.1415); // gleichmäßiger sinusbasierter Puls
+    float pulsingRadius = 1.25 + 0.25 * pulse; // zwischen 1.0 und 1.5
+
+    if(tCycle < growPhase) {
+        float t = tCycle / growPhase;
+        ringRadius = mix(pulsingRadius, 10.0, t);
+    } else if(tCycle < growPhase + brightPhase) {
+        ringRadius = 10.0;
+        fullSceneBright = true;
+    } else if(tCycle < growPhase + brightPhase + shrinkPhase) {
+        float t = (tCycle - growPhase - brightPhase) / shrinkPhase;
+        ringRadius = mix(10.0, 1.0, t);
+    } else {
+        ringRadius = pulsingRadius;
+        showPulsing = true;
+    }
+
+
+    float ringThickness = 0.05;
+    float ringStart = ringRadius - ringThickness;
+
     for(int i = 0; i < LightCount; i++) {
-        if(lights[i].Type != 0) continue; // nur PointLights
+        if(lights[i].Type != 0) continue;
 
         vec3 L = lights[i].Position - Position;
         float dist = length(L);
-        L = normalize(L);   
+        L = normalize(L);
 
         float att = 1.0 / (
             lights[i].Attenuation.x +
             lights[i].Attenuation.y * dist +
-            lights[i].Attenuation.z * dist * dist 
+            lights[i].Attenuation.z * dist * dist
         );
 
         float diff = sat(dot(N, L));
@@ -143,26 +170,29 @@ void main() {
 
         result += (diffuse + specular) * texColor.rgb;
 
-        float minRadius = 1.0;
-        float maxRadius = 2;
-        float t = (sin(time * 1.5) + 1.0) * 0.5;
-        float ringRadius = minRadius + (maxRadius - minRadius) * t;
-        float ringThickness = 0.05;
-        float ringStart = ringRadius - ringThickness;
-
         if(dist <= ringRadius)
             insideAnyLightRadius = true;
 
-        // Grüner Ringeffekt
-        if(dist >= ringStart && dist <= ringRadius) {
-            vec3 ringColor = vec3(0.0, 1.0, 0.0);
+        // --- Verhindere Wachstum, wenn zu nahe an anderen Lichtern ---
+        bool blocked = false;
+        for(int j = 0; j < LightCount; j++) {
+            if(j == i || lights[j].Type != 0) continue;
+            float distToOtherLight = length(lights[j].Position - lights[i].Position);
+            if(distToOtherLight < ringRadius * 2.0) { // einfache Annäherung
+                blocked = true;
+                break;
+            }
+        }
+
+        // --- Grüner Ring (nur anzeigen, wenn nicht blockiert) ---
+        if(!blocked && dist >= ringStart && dist <= ringRadius && (showPulsing || !fullSceneBright)) {
+            vec3 ringColor = vec3(0.0, 1.0, 0.0); // Grün
             result += ringColor;
         }
     }
 
-    if(isDarkPath && !insideAnyLightRadius) {
-         float visibility = getPathVisibility(time);
-            result *= visibility;
+    if(isDarkPath && !insideAnyLightRadius && !fullSceneBright) {
+        result *= 0.0;
     }
 
     FragColor = vec4(result, texColor.a);
