@@ -129,8 +129,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
 
     pPhongShader = new PhongShader();
     pModel = new TriangleSphereModel(0.5f);
-
-    translation.translation(4, 1, 6);
+    translation.translation(4, 1, 9);
     pModel->transform(pModel->transform()* translation);
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
     pModel->shader(pPhongShader, true);
@@ -139,24 +138,24 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
 
     pPhongShader = new PhongShader();
     pModel = new TriangleSphereModel(0.5f);
-    translation.translation(-4, 1, 6);
+    translation.translation(-4, 1, 9);
     pModel->transform(pModel->transform()* translation);
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
     pModel->shader(pPhongShader, true);
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
 
-    PointLight* light1 = new PointLight(Vector(4, 1, 6), Color(1.0f, 0.5f, 0.2f));
+    PointLight* light1 = new PointLight(Vector(4, 1, 9), Color(1.0f, 0.5f, 0.2f));
     light1->attenuation(Vector(1.0f, 0.1f, 0.05f));
     ShaderLightMapper::instance().addLight(light1);
 
-    PointLight* light2 = new PointLight(Vector(-4, 1, 6), Color(1.0f, 0.5f, 0.2f));
+    PointLight* light2 = new PointLight(Vector(-4, 1, 9), Color(1.0f, 0.5f, 0.2f));
     light2->attenuation(Vector(1.0f, 0.01f, 0.002f));
     ShaderLightMapper::instance().addLight(light2);
 
     pPhongShader = new PhongShader();
     pModel = new TriangleSphereModel(0.5f);
-    translation.translation(4, 1, -6);
+    translation.translation(4, 1, -9);
     pModel->transform(pModel->transform()* translation);
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
     pModel->shader(pPhongShader, true);
@@ -165,19 +164,19 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
 
     pPhongShader = new PhongShader();
     pModel = new TriangleSphereModel(0.5f);
-    translation.translation(-4, 1, -6);
+    translation.translation(-4, 1, -9);
     pModel->transform(pModel->transform()* translation);
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
     pModel->shader(pPhongShader, true);
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
 
-    PointLight* light3 = new PointLight(Vector(4, 1, -6), Color(1.0f, 0.5f, 0.2f));
-    light1->attenuation(Vector(1.0f, 0.1f, 0.05f));
+    PointLight* light3 = new PointLight(Vector(4, 1, -9), Color(1.0f, 0.5f, 0.2f));
+    light3->attenuation(Vector(1.0f, 0.1f, 0.05f));
     ShaderLightMapper::instance().addLight(light3);
 
-    PointLight* light4 = new PointLight(Vector(-4, 1, -6), Color(1.0f, 0.5f, 0.2f));
-    light2->attenuation(Vector(1.0f, 0.01f, 0.002f));
+    PointLight* light4 = new PointLight(Vector(-4, 1, -9), Color(1.0f, 0.5f, 0.2f));
+    light4->attenuation(Vector(1.0f, 0.01f, 0.002f));
     ShaderLightMapper::instance().addLight(light4);
 
     pPhongShader = new PhongShader();
@@ -199,6 +198,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     pModel->shader(pPhongShader, true);
     translation.translation(0, 0.5, -7.5);
     pModel->transform(pModel->transform() * translation);
+    pModel->calculateBoundingBox();
     Models.push_back(pModel);
 
     /*chassisUrsprung = chassis->transform();

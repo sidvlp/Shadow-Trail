@@ -104,16 +104,41 @@ float sat(float a) {
     return clamp(a, 0.0, 1.0);
 }
 
-void main() {
-    vec3 N = normalize(Normal);
-    vec3 E = normalize(EyePos - Position);
-    vec4 texColor = texture(DiffuseTexture, Texcoord);
-    if(texColor.a < 0.3) discard;
-
+vec3 calcBasicLighting(vec3 N, vec3 E, vec4 texColor, vec3 DiffuseColor, vec3 SpecularColor, float SpecularExp) {
     vec3 result = AmbientColor * texColor.rgb;
-    bool insideAnyLightRadius = false;
 
-    // --- Zeitbasierte Animation ---
+    for(int i = 0; i < LightCount; i++) {
+        if(lights[i].Type != 0) continue;
+
+        vec3 L = lights[i].Position - Position;
+        float dist = length(L);
+        L = normalize(L);
+
+        float att = 1.0 / (
+            lights[i].Attenuation.x +
+            lights[i].Attenuation.y * dist +
+            lights[i].Attenuation.z * dist * dist
+        );
+
+        float diff = sat(dot(N, L));
+        vec3 R = reflect(-L, N);
+        float spec = pow(sat(dot(R, E)), SpecularExp);
+
+        vec3 diffuse = lights[i].Color * DiffuseColor * diff * att;
+        vec3 specular = lights[i].Color * SpecularColor * spec * att;
+
+        result += (diffuse + specular) * texColor.rgb;
+    }
+
+    return result;
+}
+
+
+vec3 calcAnimatedLighting(vec3 N, vec3 E, vec4 texColor, vec3 DiffuseColor, vec3 SpecularColor, float SpecularExp, float time, out bool insideAnyLightRadius) {
+    vec3 result = AmbientColor * texColor.rgb;
+    insideAnyLightRadius = false;
+
+    // Deine Berechnung für growPhase, brightPhase, etc. hier, z.B.:
     float growPhase = 2.0;
     float brightPhase = 0.5;
     float shrinkPhase = 2.0;
@@ -126,9 +151,8 @@ void main() {
     bool fullSceneBright = false;
     bool showPulsing = false;
 
-    // Harmonisches Pulsieren als kontinuierliche Funktion
-    float pulse = sin(time * 3.1415); // gleichmäßiger sinusbasierter Puls
-    float pulsingRadius = 1.25 + 0.25 * pulse; // zwischen 1.0 und 1.5
+    float pulse = sin(time * 3.1415);
+    float pulsingRadius = 1.25 + 0.25 * pulse;
 
     if(tCycle < growPhase) {
         float t = tCycle / growPhase;
@@ -143,7 +167,6 @@ void main() {
         ringRadius = pulsingRadius;
         showPulsing = true;
     }
-
 
     float ringThickness = 0.05;
     float ringStart = ringRadius - ringThickness;
@@ -173,30 +196,49 @@ void main() {
         if(dist <= ringRadius)
             insideAnyLightRadius = true;
 
-        // --- Verhindere Wachstum, wenn zu nahe an anderen Lichtern ---
         bool blocked = false;
         for(int j = 0; j < LightCount; j++) {
             if(j == i || lights[j].Type != 0) continue;
             float distToOtherLight = length(lights[j].Position - lights[i].Position);
-            if(distToOtherLight < ringRadius * 2.0) { // einfache Annäherung
+            if(distToOtherLight < ringRadius * 2.0) {
                 blocked = true;
                 break;
             }
         }
 
-        // --- Grüner Ring (nur anzeigen, wenn nicht blockiert) ---
         if(!blocked && dist >= ringStart && dist <= ringRadius && (showPulsing || !fullSceneBright)) {
-            vec3 ringColor = vec3(0.0, 1.0, 0.0); // Grün
+            vec3 ringColor = vec3(1.0, 0.3, 0.0);
             result += ringColor;
         }
     }
 
-    if(isDarkPath && !insideAnyLightRadius && !fullSceneBright) {
+    if(!fullSceneBright && !insideAnyLightRadius) {
         result *= 0.0;
+    }
+
+    return result;
+}
+
+void main() {
+    vec3 N = normalize(Normal);
+    vec3 E = normalize(EyePos - Position);
+    vec4 texColor = texture(DiffuseTexture, Texcoord);
+    if(texColor.a < 0.3) discard;
+
+    vec3 result;
+    bool insideAnyLightRadius;
+
+    if(!isDarkPath) {
+        // Einfache Lichtberechnung ohne Effekt
+        result = calcBasicLighting(N, E, texColor, DiffuseColor, SpecularColor, SpecularExp);
+    } else {
+        // Effekt aktiviert
+        result = calcAnimatedLighting(N, E, texColor, DiffuseColor, SpecularColor, SpecularExp, time, insideAnyLightRadius);
     }
 
     FragColor = vec4(result, texColor.a);
 }
+
 
 )";
 

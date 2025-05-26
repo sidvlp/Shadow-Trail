@@ -1,9 +1,9 @@
-﻿  main.cpp
-  StartMenu.cpp
+﻿  Application.cpp
 C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.h(22,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
-  (Quelldatei „../../src/main.cpp“ wird kompiliert)
+  (Quelldatei „../../src/Application.cpp“ wird kompiliert)
   
-C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\main.cpp(76,32): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
-  Code wird generiert...
-LINK : warning LNK4098: Standardbibliothek "MSVCRT" steht in Konflikt mit anderen Bibliotheken; /NODEFAULTLIB:Bibliothek verwenden.
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(183,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(194,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(44,23): warning C4101: "boxModel": Unreferenzierte lokale Variable
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(263,35): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
   CGVStudio.vcxproj -> C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe
