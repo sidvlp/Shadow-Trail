@@ -89,7 +89,7 @@ int main () {
 
                 ImGui::Spacing();
                 ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Willkommen zum Spiel!").x) * 0.5f);
-                ImGui::Text("WillkommenS!");
+                ImGui::Text("Willkommen zum Spiel!");
                 ImGui::Spacing();
                 ImGui::Spacing();
 
