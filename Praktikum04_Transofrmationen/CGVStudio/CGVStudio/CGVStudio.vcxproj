@@ -56,7 +56,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\thirdparty\glfw\include;$(ProjectDir)..\thirdparty\glew\include;$(ProjectDir)..\thirdparty\assimp\include;$(ProjectDir)..\thirdparty\freeimage\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\thirdparty\glfw\include;$(ProjectDir)..\thirdparty\glew\include;$(ProjectDir)..\thirdparty\assimp\include;$(ProjectDir)..\thirdparty\freeimage\include;$(ProjectDir)..\thirdparty\imgui</AdditionalIncludeDirectories>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,6 +110,12 @@
     <ClCompile Include="..\..\src\TriangleSphereModel.cpp" />
     <ClCompile Include="..\..\src\vector.cpp" />
     <ClCompile Include="..\..\src\VertexBuffer.cpp" />
+    <ClCompile Include="..\thirdparty\imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\thirdparty\imgui\imgui.cpp" />
+    <ClCompile Include="..\thirdparty\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\thirdparty\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\thirdparty\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\thirdparty\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Plattform.cpp" />
     <ClCompile Include="Player.cpp" />

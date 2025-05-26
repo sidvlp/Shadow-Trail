@@ -1,3 +1,64 @@
-﻿  PhongShader.cpp
-C:\Users\User\Desktop\Hausarbeit\Praktikum04_Transofrmationen\src\PhongShader.cpp(262,73): warning C4244: "Argument": Konvertierung von "double" in "GLfloat", möglicher Datenverlust
-  CGVStudio.vcxproj -> C:\Users\User\Desktop\Hausarbeit\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe
+﻿  Aabb.cpp
+  Application.cpp
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.h(22,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
+  (Quelldatei „../../src/Application.cpp“ wird kompiliert)
+  
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(184,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(195,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(44,23): warning C4101: "boxModel": Unreferenzierte lokale Variable
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(263,35): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
+  BaseModel.cpp
+  BaseShader.cpp
+  Camera.cpp
+  color.cpp
+  ConstantShader.cpp
+  IndexBuffer.cpp
+  LineBoxModel.cpp
+  LinePlaneModel.cpp
+  main.cpp
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.h(22,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
+  (Quelldatei „../../src/main.cpp“ wird kompiliert)
+  
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\main.cpp(72,32): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
+  Matrix.cpp
+  Model.cpp
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Model.cpp(101,23): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Model.cpp(108,37): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Model.cpp(145,31): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Model.cpp(148,35): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Model.cpp(166,27): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Model.cpp(172,27): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Model.cpp(208,23): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Model.cpp(209,27): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+  PhongShader.cpp
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\PhongShader.cpp(262,73): warning C4244: "Argument": Konvertierung von "double" in "GLfloat", möglicher Datenverlust
+  rgbimage.cpp
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\rgbimage.cpp(45,11): warning C4244: "=": Konvertierung von "float" in "char", möglicher Datenverlust
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\rgbimage.cpp(51,9): warning C4309: "=": Verkürzung eines konstanten Wertes
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\rgbimage.cpp(146,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\rgbimage.cpp(147,21): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+  Scene.cpp
+  Tank.cpp
+  Texture.cpp
+  TriangleBoxModel.cpp
+  TrianglePlaneModel.cpp
+  Code wird generiert...
+  Kompilieren...
+  TriangleSphereModel.cpp
+  vector.cpp
+  VertexBuffer.cpp
+  imgui_impl_opengl3.cpp
+  imgui.cpp
+  imgui_draw.cpp
+  imgui_impl_glfw.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  Level.cpp
+  Plattform.cpp
+  Player.cpp
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(44,31): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(138,26): warning C4305: "Argument": Verkürzung von "double" in "float"
+  ShaderLightMapper.cpp
+  Code wird generiert...
+LINK : warning LNK4098: Standardbibliothek "MSVCRT" steht in Konflikt mit anderen Bibliotheken; /NODEFAULTLIB:Bibliothek verwenden.
+  CGVStudio.vcxproj -> C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

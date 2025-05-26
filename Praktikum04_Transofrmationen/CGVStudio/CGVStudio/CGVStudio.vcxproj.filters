@@ -14,11 +14,11 @@
     <Filter Include="Quelldateien\utils\shader">
       <UniqueIdentifier>{6a54a247-36e2-4ceb-a2f9-a70627911295}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Quelldateien\utils\yourclasses">
-      <UniqueIdentifier>{c817caf9-5b5a-4c75-ba93-0eb97e38e4d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Quelldateien\utils\Lights">
       <UniqueIdentifier>{3f4f4f86-eb9b-4056-a615-2222e50a79df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\utils\shader\yourclasses">
+      <UniqueIdentifier>{c817caf9-5b5a-4c75-ba93-0eb97e38e4d2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,13 +65,13 @@
       <Filter>Quelldateien\utils\shader</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\color.cpp">
-      <Filter>Quelldateien\utils\yourclasses</Filter>
+      <Filter>Quelldateien\utils\shader\yourclasses</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\vector.cpp">
-      <Filter>Quelldateien\utils\yourclasses</Filter>
+      <Filter>Quelldateien\utils\shader\yourclasses</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\rgbimage.cpp">
-      <Filter>Quelldateien\utils\yourclasses</Filter>
+      <Filter>Quelldateien\utils\shader\yourclasses</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Model.cpp">
       <Filter>Quelldateien\utils\models</Filter>
@@ -101,6 +101,24 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Plattform.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\thirdparty\imgui\imgui.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\thirdparty\imgui\imgui_draw.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\thirdparty\imgui\imgui_impl_glfw.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\thirdparty\imgui\imgui_tables.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\thirdparty\imgui\imgui_widgets.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\thirdparty\imgui\backends\imgui_impl_opengl3.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -151,13 +169,13 @@
       <Filter>Quelldateien\utils\shader</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\color.h">
-      <Filter>Quelldateien\utils\yourclasses</Filter>
+      <Filter>Quelldateien\utils\shader\yourclasses</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\vector.h">
-      <Filter>Quelldateien\utils\yourclasses</Filter>
+      <Filter>Quelldateien\utils\shader\yourclasses</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\rgbimage.h">
-      <Filter>Quelldateien\utils\yourclasses</Filter>
+      <Filter>Quelldateien\utils\shader\yourclasses</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Model.h">
       <Filter>Quelldateien\utils\models</Filter>
