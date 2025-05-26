@@ -1,6 +1,9 @@
 ﻿  main.cpp
+  StartMenu.cpp
 C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.h(22,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
   (Quelldatei „../../src/main.cpp“ wird kompiliert)
   
-C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\main.cpp(72,32): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\main.cpp(76,32): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
+  Code wird generiert...
+LINK : warning LNK4098: Standardbibliothek "MSVCRT" steht in Konflikt mit anderen Bibliotheken; /NODEFAULTLIB:Bibliothek verwenden.
   CGVStudio.vcxproj -> C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

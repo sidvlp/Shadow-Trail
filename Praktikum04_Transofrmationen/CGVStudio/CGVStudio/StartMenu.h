@@ -1,8 +1,7 @@
 #pragma once
-class StartMenu
-{
+
+class StartMenu {
 public:
     bool show = true;
     void Draw();
 };
-

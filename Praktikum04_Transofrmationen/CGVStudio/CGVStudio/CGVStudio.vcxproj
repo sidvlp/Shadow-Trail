@@ -120,6 +120,7 @@
     <ClCompile Include="Plattform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShaderLightMapper.cpp" />
+    <ClCompile Include="StartMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Aabb.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Plattform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderLightMapper.h" />
+    <ClInclude Include="StartMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

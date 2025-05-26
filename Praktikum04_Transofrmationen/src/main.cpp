@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include "Application.h"
 #include "freeimage.h"
+#include "../CGVStudio/CGVStudio/StartMenu.h"
+
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -66,51 +68,24 @@ int main () {
     {
         Application App(window);
         App.start();
+        StartMenu startMenu;
+
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
             lastDtime = dtime;
             dtime = glfwGetTime();
 
-            // Start ImGui Frame
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            // GUI Logik
-            static bool show_start_menu = true;
-            if (show_start_menu) {
-                ImGui::SetNextWindowSize(ImVec2(400, 300));
-                ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-                ImGui::Begin("Startmenü", nullptr,
-                    ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
-                    ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-                    ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
-                    ImGuiWindowFlags_NoScrollbar);
-
-                ImGui::Spacing();
-                ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Willkommen zum Spiel!").x) * 0.5f);
-                ImGui::Text("Willkommen zum Spiel!");
-                ImGui::Spacing();
-                ImGui::Spacing();
-
-                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 0.3f, 1.0f));
-                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.7f, 0.4f, 1.0f));
-                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.5f, 0.2f, 1.0f));
-
-                ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 200) * 0.5f);
-                if (ImGui::Button("Spiel starten", ImVec2(200, 40))) {
-                    show_start_menu = false;
-                }
-
-                ImGui::PopStyleColor(3);
-                ImGui::End();
+            if (startMenu.show) {
+                startMenu.Draw();
             }
-
             else {
                 App.update(dtime - lastDtime);
                 App.draw();
             }
-
             // ImGui Rendern
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
