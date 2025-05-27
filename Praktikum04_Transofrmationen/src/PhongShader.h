@@ -90,4 +90,4 @@ private:
     
 };
 
-#endif /* PhongShader_hpp */
+#endif

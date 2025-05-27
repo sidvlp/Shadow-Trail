@@ -117,6 +117,8 @@
     <ClCompile Include="..\thirdparty\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\thirdparty\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="ParticelSystem.cpp" />
+    <ClCompile Include="ParticleShader.cpp" />
     <ClCompile Include="Plattform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShaderLightMapper.cpp" />
@@ -147,6 +149,8 @@
     <ClInclude Include="..\..\src\VertexBuffer.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Lights.h" />
+    <ClInclude Include="ParticelSystem.h" />
+    <ClInclude Include="ParticleShader.h" />
     <ClInclude Include="Plattform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderLightMapper.h" />

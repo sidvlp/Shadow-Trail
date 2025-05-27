@@ -28,6 +28,7 @@
 #define _USE_MATH_DEFINES
 #include "math.h"
 #include "../CGVStudio/CGVStudio/Level.h"
+#include "../CGVStudio/CGVStudio/ParticelSystem.h"
 
 #ifdef WIN32
 #define ASSET_DIRECTORY "../../assets/"
@@ -64,6 +65,9 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     float startX = -((width - 1) / 2.0f);
     float startY = 0.0f;
     float startZ = -((height - 1) / 2.0f);
+
+    particleShader = new ParticleShader();
+    particleShader->particleColor(Color(1.0f, 0.5f, 0.0f));  // Orange
 
     
     for (auto plattform : path) {
@@ -107,6 +111,10 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
             PointLight* fireLight = new PointLight(Vector(x, startY + 1.0f, z), Color(1.0f, 0.5f, 0.2f));
             fireLight->attenuation(Vector(1.0f, 0.1f, 0.05f));  // optional feinjustieren
             ShaderLightMapper::instance().addLight(fireLight);
+
+            Vector firePos(x, startY + 1.0f, z);
+            ParticleSystem* fireSys = new ParticleSystem(200, firePos);
+            fireSystems.push_back(fireSys);
         }
     }
 
@@ -200,52 +208,6 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     pModel->transform(pModel->transform() * translation);
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
-
-    /*chassisUrsprung = chassis->transform();
-    chassisRot.rotationY(fb.Y * dtime);
-    chassisMov.translation(fb.X * dtime * 2, 0, 0);
-
-    chassisMatrix = chassisUrsprung * chassisMov * chassisRot;
-    this->chassis->transform(chassisMatrix);*/
-    /*
-    // create LineGrid model with constant color shader
-    pModel = new LinePlaneModel(10, 10, 10, 10);
-    pConstShader = new ConstantShader();
-	pConstShader->color( Color(1,1,1));
-    pModel->shader(pConstShader, true);
-    Models.push_back( pModel );
-
-    
-    // Exercise 1
-    // TODO Load pTankTop & pTankBot
-    pTankBot = new Model(ASSET_DIRECTORY "tank_bottom.dae");
-    pPhongShader = new PhongShader();
-    pTankBot->shader(pPhongShader, true);
-    // add to render list
-    pTankTop = new Model(ASSET_DIRECTORY "tank_top.dae");
-    pPhongShader = new PhongShader();
-    pTankTop->shader(pPhongShader, true);
-    // add to render list
-    
-    Models.push_back(pTankBot);
-    Models.push_back(pTankTop);
-    */
-
-    // Exercise 2
-    /**/
-    //pPhongShader = new PhongShader();
-    //pTank = new Tank();
-    //pTank->shader(pPhongShader, true);
-    //pTank->loadModels(ASSET_DIRECTORY "tank_bottom.dae", ASSET_DIRECTORY "tank_top.dae");
-    //Models.push_back( pTank );
-    //
-    //
-    //// Exercise 3
-    ///**/
-    //Scene* pScene = new Scene();
-    //pScene->shader(new PhongShader(), true);
-    //pScene->addSceneFile(ASSET_DIRECTORY "scene.osh");
-    //Models.push_back(pScene);
     
 }
 void Application::start()
@@ -267,6 +229,7 @@ float Application::toRadian(float degrees) {
 
 void Application::update(float dtime)
 {
+    elapsedTime += dtime;
 
     player->checkGroundCollision(Models);
 
@@ -280,6 +243,9 @@ void Application::update(float dtime)
     fb = 0;
     lr = 0;
     player->update(dtime, Cam);
+
+    for (auto* ps : fireSystems)
+        ps->Update(dtime);
 
     Cam.update();
 }
@@ -371,15 +337,14 @@ void Application::draw()
         
             (*it)->draw(Cam);
     }
+    
 
-
-
-
-
-
-
-
-
+    // 3. Partikelsystem rendern
+        particleShader->setTime(elapsedTime);  // elapsedTime im Application update hochzählen
+        particleShader->activate(Cam);
+        for (auto* ps : fireSystems) {
+            ps->Render(Cam.getProjectionMatrix() * Cam.getViewMatrix());
+        }
     // 4. check for OpenGL errors
     GLenum Error = glGetError();
     assert(Error == 0);

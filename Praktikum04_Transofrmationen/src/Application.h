@@ -20,6 +20,7 @@
 #include "tank.h"
 #include "../CGVStudio/CGVStudio/Player.h"
 #include "TriangleBoxModel.h";
+#include "../CGVStudio/CGVStudio/ParticelSystem.h"
 
 class Application
 {
@@ -41,13 +42,14 @@ protected:
     ModelList Models;
    
     GLFWwindow* pWindow;
-    Tank* pTank;
-    Model* pTankTop;
-    Model* pTankBot;
     Player* player;
     float fb, lr;
     double mx, my;
     bool gameEnded = false;
+    std::vector<ParticleSystem*> fireSystems;
+    ParticleShader* particleShader;
+    float elapsedTime = 0.0f;
+
 };
 
-#endif /* Application_hpp */
+#endif 

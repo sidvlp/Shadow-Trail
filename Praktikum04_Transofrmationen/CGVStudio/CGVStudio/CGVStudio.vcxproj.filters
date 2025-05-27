@@ -124,6 +124,12 @@
     <ClCompile Include="MenuManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="ParticelSystem.cpp">
+      <Filter>Quelldateien\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleShader.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Camera.h">
@@ -210,5 +216,9 @@
     <ClInclude Include="MenuManager.h">
       <Filter>Quelldateien</Filter>
     </ClInclude>
+    <ClInclude Include="ParticelSystem.h">
+      <Filter>Quelldateien\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleShader.h" />
   </ItemGroup>
 </Project>

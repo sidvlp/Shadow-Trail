@@ -147,6 +147,7 @@ char* BaseShader::loadFile(const char* File, unsigned int& Filesize)
 
 }
 
+
 void BaseShader::activate(const BaseCamera& Cam) const
 {
     if (ShaderInPipe != this)
@@ -157,7 +158,6 @@ void BaseShader::activate(const BaseCamera& Cam) const
     }
     ShaderInPipe = this;
 }
-
 
 void BaseShader::deactivate() const
 {

@@ -1,2 +1,9 @@
-﻿  MenuManager.cpp
+﻿  Application.cpp
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.h(22,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
+  (Quelldatei „../../src/Application.cpp“ wird kompiliert)
+  
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(191,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(202,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(45,23): warning C4101: "boxModel": Unreferenzierte lokale Variable
+C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\src\Application.cpp(225,35): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
   CGVStudio.vcxproj -> C:\Users\User\Desktop\!!!!!!!!!!!!!!!!!!!!!!!!!\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

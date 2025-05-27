@@ -44,7 +44,6 @@ void MenuManager::drawStart() {
         state = MenuState::Playing;
     }
     ImGui::EndGroup();
-
     ImGui::End();
 }
 
