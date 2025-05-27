@@ -121,7 +121,7 @@
     <ClCompile Include="..\thirdparty\imgui\backends\imgui_impl_opengl3.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="StartMenu.cpp">
+    <ClCompile Include="MenuManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -207,7 +207,7 @@
     <ClInclude Include="Plattform.h">
       <Filter>Quelldateien</Filter>
     </ClInclude>
-    <ClInclude Include="StartMenu.h">
+    <ClInclude Include="MenuManager.h">
       <Filter>Quelldateien</Filter>
     </ClInclude>
   </ItemGroup>

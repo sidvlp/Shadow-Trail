@@ -17,6 +17,7 @@ public:
 	void update(float dtime, Camera& cam);
 	virtual void draw(const BaseCamera& Cam);
 	bool checkGroundCollision(std::list<BaseModel*>& models);
+	bool checkIfOnEndPlatform(std::list<BaseModel*>& models);
 	//bool Player::checkGroundCollision(const AABB& a, const AABB& b);
 	float toRadian(float degrees);
 	void resetPosition();

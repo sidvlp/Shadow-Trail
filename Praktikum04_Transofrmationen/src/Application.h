@@ -33,6 +33,8 @@ public:
     void end();
     void keyPress(float&, float&);
     float toRadian(float degrees);
+    bool isGameOver() const;
+    void restartGame();
 protected:
     Vector calc3DRay( float x, float y, Vector& Pos);
     Camera Cam;
@@ -45,6 +47,7 @@ protected:
     Player* player;
     float fb, lr;
     double mx, my;
+    bool gameEnded = false;
 };
 
 #endif /* Application_hpp */

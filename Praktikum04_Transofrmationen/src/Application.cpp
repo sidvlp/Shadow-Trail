@@ -270,6 +270,11 @@ void Application::update(float dtime)
 
     player->checkGroundCollision(Models);
 
+    if (!gameEnded && player->checkIfOnEndPlatform(Models)) {
+        gameEnded = true;
+        std::cout << "Spiel beendet" << std::endl;
+    }
+
     keyPress(fb, lr);
     player->steer(fb, lr);
     fb = 0;
@@ -387,4 +392,14 @@ void Application::end()
         delete *it;
     
     Models.clear();
+}
+
+bool Application::isGameOver() const {
+    return gameEnded;
+}
+
+void Application::restartGame() {
+    gameEnded = false;
+    player->resetPosition();  
+    //Cam.reset();     
 }

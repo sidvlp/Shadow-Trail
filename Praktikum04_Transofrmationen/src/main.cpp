@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "Application.h"
 #include "freeimage.h"
-#include "../CGVStudio/CGVStudio/StartMenu.h"
+#include "../CGVStudio/CGVStudio/MenuManager.h"
 
 
 #include "imgui.h"
@@ -68,7 +68,7 @@ int main () {
     {
         Application App(window);
         App.start();
-        StartMenu startMenu;
+        MenuManager menu;
 
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
@@ -79,19 +79,35 @@ int main () {
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (startMenu.show) {
-                startMenu.Draw();
-            }
-            else {
+            
+            switch (menu.state) {
+            case MenuState::Start:
+                menu.Draw(); 
+                break;
+
+            case MenuState::Playing:
                 App.update(dtime - lastDtime);
+
+                if (App.isGameOver()) {
+                    menu.state = MenuState::GameWon;
+                }
+
                 App.draw();
+                break;
+
+            case MenuState::GameWon:
+                menu.Draw(); 
+                break;
+
+            default:
+                break;
             }
-            // ImGui Rendern
+
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
             glfwSwapBuffers(window);
         }
+
 
         App.end();
     }

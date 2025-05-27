@@ -183,9 +183,6 @@ void Player::update(float dtime, Camera& cam)
 			this->player->transform(playerUrsprung * playerRot);
 		}
 	}
-
-
-
 	updateBoundingBox();
 
 	if (isFalling) {
@@ -229,14 +226,9 @@ bool Player::checkGroundCollision(std::list<BaseModel*>& models)
 				(this->BoundingBox.Min.Y <= modelBox.Max.Y && this->BoundingBox.Max.Y >= modelBox.Min.Y) &&
 				(this->BoundingBox.Min.Z <= modelBox.Max.Z && this->BoundingBox.Max.Z >= modelBox.Min.Z);
 			if (groundCollision) {
-				//std::cout << "Collision detected" << std::endl;
-				if (model->isEndPlatform) {
-					std::cout << "Ende erreicht" << std::endl;
-				}
-
+				//std::cout << "Col
 				isGrounded = true;
 				isFalling = false;
-
 
 				return true;
 			}
@@ -247,6 +239,25 @@ bool Player::checkGroundCollision(std::list<BaseModel*>& models)
 	std::cout << "No collision" << std::endl;
 	return false;
 }
+
+bool Player::checkIfOnEndPlatform(std::list<BaseModel*>& models)
+{
+	for (BaseModel* model : models) {
+		if (model != this && model->isEndPlatform) {
+			const AABB& modelBox = model->getBoundingBox();
+			bool collision = (this->BoundingBox.Min.X <= modelBox.Max.X && this->BoundingBox.Max.X >= modelBox.Min.X) &&
+				(this->BoundingBox.Min.Y <= modelBox.Max.Y && this->BoundingBox.Max.Y >= modelBox.Min.Y) &&
+				(this->BoundingBox.Min.Z <= modelBox.Max.Z && this->BoundingBox.Max.Z >= modelBox.Min.Z);
+
+			if (collision) {
+				std::cout << "Ende erreicht!" << std::endl;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 
 
 
