@@ -24,6 +24,7 @@ public:
 	void drawBoundingBox(const BaseCamera& Cam);
 	void updateBoundingBox();
 	AABB& getBoundingBox();
+	Vector getPosition() const;
 
 protected:
 	Model* player;

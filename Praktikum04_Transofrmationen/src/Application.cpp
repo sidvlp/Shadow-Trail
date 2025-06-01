@@ -113,7 +113,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
             ShaderLightMapper::instance().addLight(fireLight);
 
             Vector firePos(x, startY + 1.0f, z);
-            ParticleSystem* fireSys = new ParticleSystem(200, firePos);
+            ParticleSystem* fireSys = new ParticleSystem(200, firePos, ParticleSpawnMode::Default);
             fireSystems.push_back(fireSys);
         }
     }
@@ -204,10 +204,14 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     pConstShader = new ConstantShader();
     pConstShader->color(Color(1, 0, 0));
     pModel->shader(pPhongShader, true);
-    translation.translation(0, 0.5, -7.5);
+    translation.translation(0, 0.5f, -7.5);
     pModel->transform(pModel->transform() * translation);
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
+
+    endPosition = Vector(0, 0.5f, -7.5f);
+    ParticleSystem* particleSystem = new ParticleSystem(200, endPosition, ParticleSpawnMode::Ring);
+    fireSystems.push_back(particleSystem);
     
 }
 void Application::start()
@@ -233,7 +237,10 @@ void Application::update(float dtime)
 
     player->checkGroundCollision(Models);
 
-    if (!gameEnded && player->checkIfOnEndPlatform(Models)) {
+    Vector playerPos = player->getPosition();
+    Vector diff = Vector(playerPos.X, 0, playerPos.Z) - Vector(endPosition.X, 0, endPosition.Z);
+
+    if (!gameEnded && diff.length() < 0.6f) {
         gameEnded = true;
         std::cout << "Spiel beendet" << std::endl;
     }

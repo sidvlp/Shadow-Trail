@@ -1,20 +1,24 @@
 #include "ParticelSystem.h"
-#include <cmath>   
 #include <cstdlib> 
 #include <GL/glew.h>
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
-// Hilfsfunktion für zufällige Zahl zwischen min und max
+
+
 static float RandomFloat(float min, float max) {
     return min + static_cast<float>(rand()) / RAND_MAX * (max - min);
 }
 
-ParticleSystem::ParticleSystem(int maxParticles, const Vector& emitterPos)
-    : m_MaxParticles(maxParticles), m_EmitterPosition(emitterPos)
+ParticleSystem::ParticleSystem(int maxParticles, const Vector& emitterPos, ParticleSpawnMode mode)
+    : m_MaxParticles(maxParticles), m_EmitterPosition(emitterPos), m_SpawnMode(mode)
 {
     m_Particles.resize(maxParticles);
     for (int i = 0; i < maxParticles; ++i)
         RespawnParticle(i);
 }
+
 
 void ParticleSystem::SetEmitterPosition(const Vector& pos) {
     m_EmitterPosition = pos;
@@ -62,33 +66,63 @@ int ParticleSystem::FindUnusedParticle() {
     return -1;
 }
 
-
-
 void ParticleSystem::RespawnParticle(int index) {
+    if (m_SpawnMode == ParticleSpawnMode::Ring)
+        RespawnRingParticle(index);
+    else
+        RespawnDefaultParticle(index);
+}
+
+
+void ParticleSystem::RespawnDefaultParticle(int index) {
     Particle& p = m_Particles[index];
-
-    // Neue Startposition leicht gestreut um den Emitter
     p.Position = m_EmitterPosition + Vector(RandomFloat(-0.1f, 0.1f), 0.0f, RandomFloat(-0.1f, 0.1f));
-
-    // Flamme steigt nach oben, leichte Zufallsbewegung
     p.Velocity = Vector(RandomFloat(-0.1f, 0.1f), RandomFloat(0.2f, 0.5f), RandomFloat(-0.1f, 0.1f));
 
     p.MaxLifeTime = RandomFloat(1.0f, 2.5f);
     p.LifeTime = p.MaxLifeTime;
 
-    p.Color = Color(1.0f, 0.6f, 0.2f); // Feuerfarbe
+    //p.Color = Color(1.0f, 0.6f, 0.2f); // Feuerfarbe
     p.Scale = 0.5f;
 }
+
+void ParticleSystem::RespawnRingParticle(int index) {
+    Particle& p = m_Particles[index];
+
+    float radius = 0.7f;
+    float angle = RandomFloat(0.0f, 2.0f * M_PI);
+
+    float x = cos(angle) * radius + RandomFloat(-0.02f, 0.02f);
+    float z = sin(angle) * radius + RandomFloat(-0.02f, 0.02f);
+
+    p.Position = m_EmitterPosition + Vector(x, 0.0f, z);
+
+    Vector outward = Vector(cos(angle), 0.0f, sin(angle)) * RandomFloat(0.02f, 0.05f);
+    float upward = RandomFloat(0.01f, 0.05f); 
+
+    p.Velocity = outward + Vector(0.0f, upward, 0.0f);
+
+    p.MaxLifeTime = RandomFloat(1.2f, 1.8f); 
+    p.LifeTime = p.MaxLifeTime;
+    //p.Color = Color(1.0f, 0.8f, 0.4f); 
+    p.Scale = 0.5f;
+}
+
+
 
 void ParticleSystem::Render(const Matrix& viewProjMatrix) {
     glBegin(GL_POINTS);
     for (auto& p : m_Particles) {
         if (p.LifeTime <= 0.0f) continue;
 
-        glColor4f(p.Color.R, p.Color.G, p.Color.B, 1.0f); // oder mit Alpha
+        glColor4f(p.Color.R, p.Color.G, p.Color.B, 1.0f); 
         glVertex3f(p.Position.X, p.Position.Y, p.Position.Z);
     }
     glEnd();
+}
+
+Vector ParticleSystem::GetEmitterPosition() const {
+    return m_EmitterPosition;
 }
 
 

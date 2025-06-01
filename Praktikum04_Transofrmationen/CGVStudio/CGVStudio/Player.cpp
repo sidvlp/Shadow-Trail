@@ -258,6 +258,12 @@ bool Player::checkIfOnEndPlatform(std::list<BaseModel*>& models)
 	return false;
 }
 
+Vector Player::getPosition() const {
+	const Matrix& transform = player->transform();
+	return Vector(transform.m[12], transform.m[13], transform.m[14]);
+}
+
+
 
 
 

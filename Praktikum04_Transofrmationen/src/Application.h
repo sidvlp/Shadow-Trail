@@ -49,6 +49,7 @@ protected:
     std::vector<ParticleSystem*> fireSystems;
     ParticleShader* particleShader;
     float elapsedTime = 0.0f;
+    Vector endPosition;
 
 };
 
