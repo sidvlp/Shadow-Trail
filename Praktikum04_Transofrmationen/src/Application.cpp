@@ -22,25 +22,22 @@
 #include "triangleboxmodel.h"
 #include "model.h"
 #include "scene.h"
-#include "../CGVStudio/CGVStudio/ShaderLightMapper.h"
 
 
 #define _USE_MATH_DEFINES
 #include "math.h"
 #include "../CGVStudio/CGVStudio/Level.h"
 #include "../CGVStudio/CGVStudio/ParticelSystem.h"
+#include "../CGVStudio/CGVStudio/MenuManager.h"
 
-#ifdef WIN32
-#define ASSET_DIRECTORY "../../assets/"
-#else
-#define ASSET_DIRECTORY "../assets/"
-#endif
 
-  /*  pPhongShader = new PhongShader();
-    pPhongShader->diffuseColor(Color(1.0f, 0.0f, 0.0f));*/
-    //  pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "border.jpg"));
-Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr(0), mx(0),my(0)
-{
+
+
+Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr(0), mx(0), my(0)
+{}
+
+void Application::initialize(Difficulty difficulty) {
+    this->difficulty = difficulty;
     BaseModel* pModel;
     TriangleBoxModel* boxModel;
     ConstantShader* pConstShader;
@@ -54,22 +51,37 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     pConstShader = new ConstantShader();
     pConstShader->color(Color(0,0,1));
 
-    int width = 10;
-    int height = 10;
+    int width;
+    int height;
+
+    if (difficulty == Difficulty::Easy) {
+         width = 10;
+         height = 10;
+    }
+    else if (difficulty == Difficulty::Hard) {
+         width = 15;
+         height = 20;
+    }
+    
+
 
     Level level(width, height); 
     level.generatePathWithLights();
 
-    auto& path = level.getPath();
+    auto path = level.getPath();
+    //std::reverse(path.begin(), path.end());
+    float offset = 0.5f;
 
-    float startX = -((width - 1) / 2.0f);
+    //float startX = -((width - 1) / 2.0f);
     float startY = 0.0f;
-    float startZ = -((height - 1) / 2.0f);
+    //float startZ = -((height - 1) / 2.0f);
+    float startX = 0.0f;
+    float startZ = 0.0f;
 
-    particleShader = new ParticleShader();
+    const Texture* fireTex = Texture::LoadShared(ASSET_DIRECTORY "fireTex2.bmp");
+    particleShader = new ParticleShader(fireTex);
     particleShader->particleColor(Color(1.0f, 0.5f, 0.0f));  // Orange
 
-    
     for (auto plattform : path) {
         TriangleBoxModel* box = new TriangleBoxModel(1, 1, 1);
 
@@ -123,6 +135,9 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
     pPhongShader = new PhongShader();
     player = new Player();
     player->shader(pPhongShader, false);
+    player->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f ));
+    //player->setPosition(Vector(0,0,0));
+
     player->loadModels(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");
     Models.push_back(player);
 
@@ -133,83 +148,62 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr
 //    player->loadModels(ASSET_DIRECTORY "torchstick.fbx");
 //    Models.push_back(player);
    
-   
+    float fireY = 1.0f;
+    float fireRadius = 0.5f;
+    float platformDepth = 5.0f;
 
-    pPhongShader = new PhongShader();
-    pModel = new TriangleSphereModel(0.5f);
-    translation.translation(4, 1, 9);
-    pModel->transform(pModel->transform()* translation);
-    pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
-    pModel->shader(pPhongShader, true);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
+    // Plattformpositionen (aus den translation.translation(...) Zeilen)
+    float startXPlat = width / 2.0f - offset;
+    float startZPlat = -2.5f - offset;
 
-    pPhongShader = new PhongShader();
-    pModel = new TriangleSphereModel(0.5f);
-    translation.translation(-4, 1, 9);
-    pModel->transform(pModel->transform()* translation);
-    pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
-    pModel->shader(pPhongShader, true);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
+    float endXPlat = width / 2.0f - offset;
+    float endZPlat = height + 2.5f - offset;
 
-    PointLight* light1 = new PointLight(Vector(4, 1, 9), Color(1.0f, 0.5f, 0.2f));
-    light1->attenuation(Vector(1.0f, 0.1f, 0.05f));
-    ShaderLightMapper::instance().addLight(light1);
+    // Hinterste Z-Positionen der Plattformen (Z-Mitte + halbe Tiefe)
+    float rearZ_start = startZPlat + platformDepth / 2.0f;
+    float rearZ_end = endZPlat + platformDepth / 2.0f;
 
-    PointLight* light2 = new PointLight(Vector(-4, 1, 9), Color(1.0f, 0.5f, 0.2f));
-    light2->attenuation(Vector(1.0f, 0.01f, 0.002f));
-    ShaderLightMapper::instance().addLight(light2);
+    // Startplattform: hinten links & rechts
+    Vector fire1(startXPlat - width / 2.0f + fireRadius, fireY, rearZ_start - platformDepth + fireRadius);
+    Vector fire2(startXPlat + width / 2.0f - fireRadius, fireY, rearZ_start - platformDepth + fireRadius);
 
-    pPhongShader = new PhongShader();
-    pModel = new TriangleSphereModel(0.5f);
-    translation.translation(4, 1, -9);
-    pModel->transform(pModel->transform()* translation);
-    pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
-    pModel->shader(pPhongShader, true);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
+    // Endplattform: hinten links & rechts
+    Vector fire3(endXPlat - width / 2.0f + fireRadius, fireY, rearZ_end - fireRadius);
+    Vector fire4(endXPlat + width / 2.0f - fireRadius, fireY, rearZ_end - fireRadius);
 
-    pPhongShader = new PhongShader();
-    pModel = new TriangleSphereModel(0.5f);
-    translation.translation(-4, 1, -9);
-    pModel->transform(pModel->transform()* translation);
-    pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
-    pModel->shader(pPhongShader, true);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
+    // Platzieren
+    addFireSphereAndLight(fire1);
+    addFireSphereAndLight(fire2);
+    addFireSphereAndLight(fire3);
+    addFireSphereAndLight(fire4);
 
-    PointLight* light3 = new PointLight(Vector(4, 1, -9), Color(1.0f, 0.5f, 0.2f));
-    light3->attenuation(Vector(1.0f, 0.1f, 0.05f));
-    ShaderLightMapper::instance().addLight(light3);
 
-    PointLight* light4 = new PointLight(Vector(-4, 1, -9), Color(1.0f, 0.5f, 0.2f));
-    light4->attenuation(Vector(1.0f, 0.01f, 0.002f));
-    ShaderLightMapper::instance().addLight(light4);
 
     pPhongShader = new PhongShader();
     pModel = new TrianglePlaneModel(width, 5, 1,1);
+    //pModel->isEndPlatform = true;
     pConstShader = new ConstantShader();
     pConstShader->color(Color(1, 0, 0));
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "brick_platform.jpg"));
     pModel->shader(pPhongShader, true);
-    translation.translation(0, 0.5f, 7.5);
+    translation.translation(width / 2.0f -offset, 0.5f, 0 - 2.5f -offset);
     pModel->transform(pModel->transform() * translation);
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
    
     
+    
     pModel = new TrianglePlaneModel(width, 5, 1, 1);
-    pModel->isEndPlatform = true;
     pConstShader = new ConstantShader();
     pConstShader->color(Color(1, 0, 0));
     pModel->shader(pPhongShader, true);
-    translation.translation(0, 0.5f, -7.5);
+    translation.translation(width / 2.0f -offset, 0.5f, height + 2.5f -offset);
     pModel->transform(pModel->transform() * translation);
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
+    
 
-    endPosition = Vector(0, 0.5f, -7.5f);
+    endPosition = Vector(width/2.0f-offset, 0.5f, -2.5f);
     ParticleSystem* particleSystem = new ParticleSystem(200, endPosition, ParticleSpawnMode::Ring);
     fireSystems.push_back(particleSystem);
     
@@ -222,6 +216,12 @@ void Application::start()
     glCullFace(GL_BACK);
     glEnable(GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    /*
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    */
 }
 
 float Application::toRadian(float degrees) {
@@ -375,3 +375,21 @@ void Application::restartGame() {
     player->resetPosition();  
     //Cam.reset();     
 }
+
+void Application::addFireSphereAndLight(const Vector& pos) {
+    PhongShader* fireShader = new PhongShader();
+    fireShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
+
+    TriangleSphereModel* fire = new TriangleSphereModel(0.5f);
+    Matrix trans;
+    trans.translation(pos);
+    fire->transform(fire->transform() * trans);
+    fire->shader(fireShader, true);
+    fire->calculateBoundingBox();
+    Models.push_back(fire);
+
+    PointLight* light = new PointLight(pos, Color(1.0f, 0.5f, 0.2f));
+    light->attenuation(Vector(1.0f, 0.1f, 0.05f));
+    ShaderLightMapper::instance().addLight(light);
+}
+

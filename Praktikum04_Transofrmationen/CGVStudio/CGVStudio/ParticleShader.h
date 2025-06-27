@@ -3,10 +3,11 @@
 #include "../../src/Matrix.h"
 #include "../../src/color.h"
 #include "../../src/baseshader.h"
+#include "../../src/Texture.h"
 
 class ParticleShader : public BaseShader {
 public:
-    ParticleShader();
+    ParticleShader(const Texture* tex = nullptr);
 
     void activate(const BaseCamera& Cam) const override;
 
@@ -24,4 +25,7 @@ private:
     GLint PointSizeLoc;
     GLint ParticleColorLoc;
     GLint TimeLoc;
+
+    const Texture* FireTexture = nullptr;
+    void testTexturePaths();
 };

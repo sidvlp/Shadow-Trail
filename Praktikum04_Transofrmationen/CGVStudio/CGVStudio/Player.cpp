@@ -30,7 +30,8 @@ bool Player::loadModels(const char* player_model)
 		Matrix playerRotX, playerRotY, playerMove, playerUrsprung;
 		playerRotX.rotationX(toRadian(-90));
 		playerRotY.rotationY(toRadian(180));
-		playerMove.translation(0, 0.5, 7.5);
+		playerMove.translation(startPosition);
+
 		playerUrsprung = this->player->transform();
 		playerUrsprung.scale(0.02f);
 		player->transform(playerMove * playerUrsprung * playerRotY * playerRotX);
@@ -77,7 +78,7 @@ void Player::resetPosition() {
 
 	// 4. Neue Transformationsmatrix erstellen (nur Translation zurücksetzen)
 	Matrix newTransform;
-	newTransform.translation(0, 5.5f, 7.5f);  // Reset-Position
+	newTransform.translation(startPosition);  // Reset-Position
 
 	// Rotation wieder anwenden
 	for (int i = 0; i < 3; ++i) {
@@ -262,6 +263,13 @@ Vector Player::getPosition() const {
 	const Matrix& transform = player->transform();
 	return Vector(transform.m[12], transform.m[13], transform.m[14]);
 }
+
+void Player::setPosition(const Vector& pos) {
+	startPosition = pos;
+}
+
+
+
 
 
 

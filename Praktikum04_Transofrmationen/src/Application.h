@@ -9,6 +9,13 @@
 #ifndef Application_hpp
 #define Application_hpp
 
+#define ASSET_DIRECTORY "../../assets/"
+#else
+#define ASSET_DIRECTORY "../assets/"
+#endif
+#ifdef WIN32
+
+
 #include <stdio.h>
 #include <list>
 #include "camera.h"
@@ -21,6 +28,9 @@
 #include "../CGVStudio/CGVStudio/Player.h"
 #include "TriangleBoxModel.h";
 #include "../CGVStudio/CGVStudio/ParticelSystem.h"
+#include "../CGVStudio/CGVStudio/MenuManager.h"
+#include "../CGVStudio/CGVStudio/ShaderLightMapper.h"
+
 
 class Application
 {
@@ -28,6 +38,7 @@ public:
     typedef std::list<BaseModel*> ModelList;
    
     Application(GLFWwindow* pWin);
+    void initialize(Difficulty difficulty);
     void start();
     void update(float);
     void draw();
@@ -50,6 +61,9 @@ protected:
     ParticleShader* particleShader;
     float elapsedTime = 0.0f;
     Vector endPosition;
+    Difficulty difficulty;
+
+    void addFireSphereAndLight(const Vector& pos);
 
 };
 

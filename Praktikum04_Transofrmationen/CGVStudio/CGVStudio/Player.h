@@ -25,6 +25,8 @@ public:
 	void updateBoundingBox();
 	AABB& getBoundingBox();
 	Vector getPosition() const;
+    void setPosition(const Vector& pos);
+
 
 protected:
 	Model* player;
@@ -36,6 +38,7 @@ protected:
 	bool isFalling;
 	float fallVelocity;
 	const float GRAVITY = -9.81f;
+	Vector startPosition;
 
 };
 

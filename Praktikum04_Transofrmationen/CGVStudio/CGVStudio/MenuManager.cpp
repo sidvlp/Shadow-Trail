@@ -28,24 +28,35 @@ void MenuManager::drawStart() {
         ImGuiWindowFlags_NoBringToFrontOnFocus |
         ImGuiWindowFlags_NoBackground);
 
-    // Halbtransparenter dunkler Hintergrund (optional)
+    // Halbtransparenter Hintergrund
     ImGui::GetWindowDrawList()->AddRectFilled(
         viewport->Pos,
         ImVec2(viewport->Pos.x + viewport->Size.x, viewport->Pos.y + viewport->Size.y),
         IM_COL32(0, 0, 0, 200)
     );
 
-    // Zentrierter Text & Buttons
-    ImGui::SetCursorPosY(viewport->Size.y / 2.0f - 60);
+    // Zentrierte Buttons
+    ImGui::SetCursorPosY(viewport->Size.y / 2.0f - 80);
     ImGui::SetCursorPosX(viewport->Size.x / 2.0f - 100);
     ImGui::BeginGroup();
+
     ImGui::Text("Willkommen zum Spiel!");
-    if (ImGui::Button("Spiel starten", ImVec2(200, 40))) {
+
+    if (ImGui::Button("Leicht", ImVec2(200, 40))) {
+        difficulty = Difficulty::Easy;
         state = MenuState::Playing;
     }
+
+    if (ImGui::Button("Schwer", ImVec2(200, 40))) {
+        difficulty = Difficulty::Hard;
+        state = MenuState::Playing;
+    }
+
+
     ImGui::EndGroup();
     ImGui::End();
 }
+
 
 
 void MenuManager::drawGameOver() {
@@ -72,7 +83,7 @@ void MenuManager::drawGameOver() {
     ImGui::SetCursorPosY(viewport->Size.y / 2.0f - 60);
     ImGui::SetCursorPosX(viewport->Size.x / 2.0f - 100);
     ImGui::BeginGroup();
-    ImGui::Text("Glückwunsch! Du hast das Spiel gewonnen!");
+    ImGui::Text("Glueckwunsch!");
     if (ImGui::Button("Neustarten", ImVec2(200, 40))) {
         //
     }

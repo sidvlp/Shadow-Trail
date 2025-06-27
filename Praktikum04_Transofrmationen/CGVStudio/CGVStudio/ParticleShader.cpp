@@ -1,4 +1,7 @@
 #include "ParticleShader.h"
+#include "../../src/Texture.h"
+#include "../../src/Application.h"
+
 
 const char* ParticleVertexShader = R"(
 #version 400
@@ -25,13 +28,38 @@ void main() {
     FragColor = vec4(ParticleColor, alpha);
 }
 )";
+/*
 
-ParticleShader::ParticleShader() :
-    PointSize(10.0f), ParticleColor(1, 1, 1), Time(0.0f)
+const char* ParticleFragmentShader = R"(
+#version 400
+uniform sampler2D ParticleTex;
+uniform vec3 ParticleColor;
+uniform float time;
+
+out vec4 FragColor;
+
+void main() {
+    vec2 coord = gl_PointCoord;
+    vec4 texColor = texture(ParticleTex, coord);
+    float flicker = 0.5 + 0.5 * sin(time * 6.2831);
+    vec4 color = vec4(ParticleColor, 1.0) * texColor * flicker;
+    
+    if(color.a < 0.1) discard;
+    FragColor = color;
+}
+
+)";
+*/
+
+
+ParticleShader::ParticleShader(const Texture* tex) :
+    PointSize(10.0f), ParticleColor(1, 1, 1), Time(0.0f), FireTexture(tex)
 {
     ShaderProgram = createShaderProgram(ParticleVertexShader, ParticleFragmentShader);
     assignLocations();
 }
+
+
 
 void ParticleShader::assignLocations() {
     PointSizeLoc = glGetUniformLocation(ShaderProgram, "PointSize");
@@ -48,6 +76,10 @@ void ParticleShader::activate(const BaseCamera& Cam) const {
     glUniform1f(PointSizeLoc, PointSize);
     glUniform3f(ParticleColorLoc, ParticleColor.R, ParticleColor.G, ParticleColor.B);
     glUniform1f(TimeLoc, Time);
+
+   // FireTexture->activate(0);
+    //glUniform1i(glGetUniformLocation(ShaderProgram, "ParticleTex"), 0);
+
 }
 
 void ParticleShader::pointSize(float size) {

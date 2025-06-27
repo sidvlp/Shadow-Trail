@@ -1,3 +1,9 @@
-﻿  ParticelSystem.cpp
-C:\Users\User\Desktop\Computergrafik\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\ParticelSystem.cpp(98,42): warning C4305: "Argument": Verkürzung von "double" in "float"
+﻿  Application.cpp
+C:\Users\User\Desktop\Computergrafik\Praktikum04_Transofrmationen\src\Application.h(29,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
+  (Quelldatei „../../src/Application.cpp“ wird kompiliert)
+  
+C:\Users\User\Desktop\Computergrafik\Praktikum04_Transofrmationen\src\Application.cpp(183,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\Computergrafik\Praktikum04_Transofrmationen\src\Application.cpp(196,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\Computergrafik\Praktikum04_Transofrmationen\src\Application.cpp(42,23): warning C4101: "boxModel": Unreferenzierte lokale Variable
+C:\Users\User\Desktop\Computergrafik\Praktikum04_Transofrmationen\src\Application.cpp(229,35): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
   CGVStudio.vcxproj -> C:\Users\User\Desktop\Computergrafik\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

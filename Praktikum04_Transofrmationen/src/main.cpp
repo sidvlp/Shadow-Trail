@@ -66,9 +66,10 @@ int main () {
     float lastDtime;
     
     {
-        Application App(window);
-        App.start();
         MenuManager menu;
+        Application App(window);
+
+        bool initialized = false;
 
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
@@ -82,10 +83,16 @@ int main () {
             
             switch (menu.state) {
             case MenuState::Start:
-                menu.Draw(); 
+                menu.Draw();
                 break;
 
             case MenuState::Playing:
+                if (!initialized) {
+                    App.initialize(menu.difficulty);  
+                    App.start();
+                    initialized = true;
+                }
+
                 App.update(dtime - lastDtime);
 
                 if (App.isGameOver()) {
@@ -96,7 +103,7 @@ int main () {
                 break;
 
             case MenuState::GameWon:
-                menu.Draw(); 
+                menu.Draw();
                 break;
 
             default:
