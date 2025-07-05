@@ -12,6 +12,10 @@ class Level
     void generatePathWithLights();
     const std::vector<Plattform*>& getPath() const;
 
+    void addWalls();
+
+    void generateWall();
+
 
     private:
     std::vector<Plattform*> path;

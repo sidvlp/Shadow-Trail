@@ -33,10 +33,14 @@
 
 
 
-Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin), fb(0), lr(0), mx(0), my(0)
-{}
+Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam1(pWin),Cam2(pWin), fb(0), lr(0), mx(0), my(0)
+{
+    glfwGetWindowSize(pWin, &windowWidth, &windowHeight);
+}
 
 void Application::initialize(Difficulty difficulty) {
+    
+
     this->difficulty = difficulty;
     BaseModel* pModel;
     TriangleBoxModel* boxModel;
@@ -53,17 +57,44 @@ void Application::initialize(Difficulty difficulty) {
 
     int width;
     int height;
+    float wallHeight = 20.0f;
+    float wallOffset = 1.0f;
+   
+    float xOffSet = 0;
+    float xOffSet2 = 0;
+    float zOffSet = 0;
 
     if (difficulty == Difficulty::Easy) {
          width = 10;
          height = 10;
+         
     }
     else if (difficulty == Difficulty::Hard) {
          width = 15;
          height = 20;
+         xOffSet = 5;
+         xOffSet2 = 2.5;
+         zOffSet = 5;
     }
-    
 
+    pPhongShader = new PhongShader();
+    player1 = new Player();
+    player1->shader(pPhongShader, false);
+    player1->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
+    player1->loadModels(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");
+    Models.push_back(player1);
+
+   
+    
+    if (gameManager.state == MenuState::MultiPlayer)
+    {
+        pPhongShader = new PhongShader();
+        player2 = new Player();
+        player2->shader(pPhongShader, false);
+        player2->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
+        player2->loadModels(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");
+        Models.push_back(player2);
+    }
 
     Level level(width, height); 
     level.generatePathWithLights();
@@ -132,14 +163,7 @@ void Application::initialize(Difficulty difficulty) {
 
    // pModel = new Model(ASSET_DIRECTORY "13463_Australian_Cattle_Dog_v3.obj");
   //  pModel = new Model(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");s
-    pPhongShader = new PhongShader();
-    player = new Player();
-    player->shader(pPhongShader, false);
-    player->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f ));
-    //player->setPosition(Vector(0,0,0));
-
-    player->loadModels(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");
-    Models.push_back(player);
+  
 
 //    pPhongShader = new PhongShader();
 ////   pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "torchstick.png"));
@@ -177,8 +201,6 @@ void Application::initialize(Difficulty difficulty) {
     addFireSphereAndLight(fire3);
     addFireSphereAndLight(fire4);
 
-
-
     pPhongShader = new PhongShader();
     pModel = new TrianglePlaneModel(width, 5, 1,1);
     //pModel->isEndPlatform = true;
@@ -190,8 +212,43 @@ void Application::initialize(Difficulty difficulty) {
     pModel->transform(pModel->transform() * translation);
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
-   
-    
+
+    //linke Wand
+    pModel = new TrianglePlaneModel(width * 2, 20, 1, 1);
+    pModel->isWall = true;
+    pModel->shader(pPhongShader, true);
+    translation.translation(-0.5, 10.5, 4.5 + zOffSet);
+    rotationY.rotationY(toRadian(90));
+    rotationZ.rotationZ(toRadian(-90));
+    pModel->transform(pModel->transform()* translation* rotationZ* rotationY);
+    pModel->setSurfaceNormal(Vector(1, 0, 0));
+    pModel->calculateBoundingBox();
+    Models.push_back(pModel);
+
+    //rechte Wand
+    pModel = new TrianglePlaneModel(width * 2, 20, 1, 1);
+    pModel->isWall = true;
+    pModel->shader(pPhongShader, true);
+    translation.translation(9.5 + xOffSet, 10.5, 4.5 + zOffSet);
+    rotationY.rotationY(toRadian(90));
+    rotationZ.rotationZ(toRadian(90));
+    pModel->transform(pModel->transform()* translation* rotationZ* rotationY);
+    pModel->setSurfaceNormal(Vector(-1, 0, 0));
+    pModel->calculateBoundingBox();
+    Models.push_back(pModel);
+  
+
+    ////hintere Wand
+    pModel = new TrianglePlaneModel(width, 20, 1, 1);
+    pModel->isWall = true;
+    pModel->shader(pPhongShader, true);
+    translation.translation(4.5 + xOffSet2, 10.5, -5.5);
+    rotationX.rotationX(toRadian(90));
+    rotationZ.rotationZ(toRadian(90));
+    pModel->transform(pModel->transform()* translation* rotationX);
+    pModel->setSurfaceNormal(Vector(0, 0, 1));
+    pModel->calculateBoundingBox();
+    Models.push_back(pModel);   
     
     pModel = new TrianglePlaneModel(width, 5, 1, 1);
     pConstShader = new ConstantShader();
@@ -208,6 +265,8 @@ void Application::initialize(Difficulty difficulty) {
     fireSystems.push_back(particleSystem);
     
 }
+
+
 void Application::start()
 {
     glEnable (GL_DEPTH_TEST); // enable depth-testing
@@ -233,31 +292,57 @@ float Application::toRadian(float degrees) {
 
 void Application::update(float dtime)
 {
-    elapsedTime += dtime;
-
-    player->checkGroundCollision(Models);
-
-    Vector playerPos = player->getPosition();
-    Vector diff = Vector(playerPos.X, 0, playerPos.Z) - Vector(endPosition.X, 0, endPosition.Z);
-
-    if (!gameEnded && diff.length() < 0.6f) {
-        gameEnded = true;
-        std::cout << "Spiel beendet" << std::endl;
+    if (MenuManager::instance().resetRequested) {
+        restartGame();
+        MenuManager::instance().resetRequested = false;
     }
 
-    keyPress(fb, lr);
-    player->steer(fb, lr);
+    elapsedTime += dtime;
+
+    player1->checkGroundCollision(Models);
+    keyPressPlayer1(fb, lr);
+    player1->steer(fb, lr);
     fb = 0;
     lr = 0;
-    player->update(dtime, Cam);
+    player1->update(dtime, Cam1, Models);
+
+    Vector player1Pos = player1->getPosition();
+    Vector diff1 = Vector(player1Pos.X, 0, player1Pos.Z) - Vector(endPosition.X, 0, endPosition.Z);
+
+    if (MenuManager::instance().state == MenuState::MultiPlayer)
+    {
+        player2->checkGroundCollision(Models);
+        keyPressPlayer2(fb, lr);
+        player2->steer(fb, lr);
+        fb = 0;
+        lr = 0;
+        player2->update(dtime, Cam2, Models);
+
+        Vector player2Pos = player2->getPosition();
+        Vector diff2 = Vector(player2Pos.X, 0, player2Pos.Z) - Vector(endPosition.X, 0, endPosition.Z);
+
+        if (!gameEnded && (diff1.length() < 0.6f || diff2.length() < 0.6f)) {
+            gameEnded = true;
+            std::cout << "Spiel beendet (Multiplayer)" << std::endl;
+        }
+    }
+    else
+    {
+        if (!gameEnded && diff1.length() < 0.6f) {
+            gameEnded = true;
+            std::cout << "Spiel beendet (Singleplayer)" << std::endl;
+        }
+    }
 
     for (auto* ps : fireSystems)
         ps->Update(dtime);
 
-    Cam.update();
+    Cam1.update();
+    Cam2.update();
 }
 
-void Application::keyPress(float &fb, float &lr) {
+
+void Application::keyPressPlayer1(float &fb, float &lr) {
     
     
     if (glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
@@ -273,6 +358,26 @@ void Application::keyPress(float &fb, float &lr) {
     }
   
     if (glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS) {
+        lr = 1;
+    }
+   
+
+}void Application::keyPressPlayer2(float &fb, float &lr) {
+    
+    
+    if (glfwGetKey(pWindow, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        fb = -1;
+    }
+    if (glfwGetKey(pWindow, GLFW_KEY_UP) == GLFW_PRESS) {
+        fb = 1;
+    }
+  
+   
+    if (glfwGetKey(pWindow, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        lr = -1;
+    }
+  
+    if (glfwGetKey(pWindow, GLFW_KEY_LEFT) == GLFW_PRESS) {
         lr = 1;
     }
    
@@ -294,16 +399,16 @@ Vector Application::calc3DRay( float x, float y, Vector& Pos)
     yNormal = -(y - windowHeightHalf) / windowHeightHalf;
     
     //Richtungsvector(Kamararaum) erzeugen mit inverser Projektionsmatrix
-    Matrix projectionCam = this->Cam.getProjectionMatrix(); 
+    Matrix projectionCam = this->Cam1.getProjectionMatrix(); 
     Vector normalCursor(xNormal, yNormal, 0);
     Vector direction = projectionCam.invert() * normalCursor;
 
     //Umwandlung des Richtungsvectors in den Weltraum
-    Matrix viewMatrix = this->Cam.getViewMatrix();
+    Matrix viewMatrix = this->Cam1.getViewMatrix();
     Vector directionInWeltraum = viewMatrix.invert().transformVec3x3(direction);
 
     //Schnittpunkt mit der Ebene y=0 bestimmen
-    Vector camPos = this->Cam.position();
+    Vector camPos = this->Cam1.position();
     directionInWeltraum.normalize();
     float s;
     camPos.triangleIntersection(directionInWeltraum, Vector(0, 0, 1), Vector(0, 0, 0), Vector(1, 0, 0), s);
@@ -327,34 +432,51 @@ Vector Application::calc3DRay( float x, float y, Vector& Pos)
 
 void Application::draw()
 {
-    // 1. clear screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     ShaderLightMapper::instance().activate();
 
-    // 2. setup shader für Pfad
+    particleShader->setTime(elapsedTime);
 
-    for (auto it = Models.begin(); it != Models.end(); ++it)
-    {
-            PhongShader* shader = dynamic_cast<PhongShader*>((*it)->shader());
-            if (shader)
-            {
-                shader->setDarkPath((*it)->isPath);
-            }
-        
-            (*it)->draw(Cam);
+    if (MenuManager::instance().state == MenuState::MultiPlayer) {
+      
+        glViewport(0, 0, windowWidth / 2, windowHeight);
+        Cam1.update();
+        drawScene(Cam1);
+        particleShader->activate(Cam1);
+        for (auto* ps : fireSystems)
+            ps->Render(Cam1.getProjectionMatrix() * Cam1.getViewMatrix());
+
+        glViewport(windowWidth / 2, 0, windowWidth / 2, windowHeight);
+        Cam2.update();
+        drawScene(Cam2);
+        particleShader->activate(Cam2);
+        for (auto* ps : fireSystems)
+            ps->Render(Cam2.getProjectionMatrix() * Cam2.getViewMatrix());
     }
-    
+    else {
+        glViewport(0, 0, windowWidth, windowHeight);
+        Cam1.update();
+        drawScene(Cam1);
+        particleShader->activate(Cam1);
+        for (auto* ps : fireSystems)
+            ps->Render(Cam1.getProjectionMatrix() * Cam1.getViewMatrix());
+    }
 
-    // 3. Partikelsystem rendern
-        particleShader->setTime(elapsedTime);  // elapsedTime im Application update hochzählen
-        particleShader->activate(Cam);
-        for (auto* ps : fireSystems) {
-            ps->Render(Cam.getProjectionMatrix() * Cam.getViewMatrix());
-        }
-    // 4. check for OpenGL errors
     GLenum Error = glGetError();
     assert(Error == 0);
+}
+
+void Application::drawScene(Camera& cam) {
+    for (auto it = Models.begin(); it != Models.end(); ++it)
+    {
+        PhongShader* shader = dynamic_cast<PhongShader*>((*it)->shader());
+        if (shader)
+        {
+            shader->setDarkPath((*it)->isPath);
+        }
+
+        (*it)->draw(cam);
+    }
 }
 
 
@@ -372,8 +494,15 @@ bool Application::isGameOver() const {
 
 void Application::restartGame() {
     gameEnded = false;
-    player->resetPosition();  
-    //Cam.reset();     
+    player1->resetPosition();  
+    if (MenuManager::instance().state == MenuState::MultiPlayer) {
+        player2->resetPosition();
+    }
+
+    
+
+    // Reset-Modus speichern (wird aus Menü gesetzt)
+    MenuManager::instance().lastMode = MenuManager::instance().state;
 }
 
 void Application::addFireSphereAndLight(const Vector& pos) {

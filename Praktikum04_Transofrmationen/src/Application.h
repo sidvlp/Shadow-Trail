@@ -42,18 +42,23 @@ public:
     void start();
     void update(float);
     void draw();
+    void drawScene(Camera& cam);
     void end();
-    void keyPress(float&, float&);
+    void keyPressPlayer1(float&, float&);
+    void keyPressPlayer2(float&, float&);
     float toRadian(float degrees);
     bool isGameOver() const;
     void restartGame();
+    void Application::addWall(float width, float height, const Vector& position, const Vector& rotationAxis, float angleDegrees, const Vector& surfaceNormal);
 protected:
     Vector calc3DRay( float x, float y, Vector& Pos);
-    Camera Cam;
+    Camera Cam1, Cam2;
     ModelList Models;
-   
+    int windowWidth;
+    int windowHeight;
     GLFWwindow* pWindow;
-    Player* player;
+    Player* player1;
+    Player* player2;
     float fb, lr;
     double mx, my;
     bool gameEnded = false;
@@ -62,7 +67,7 @@ protected:
     float elapsedTime = 0.0f;
     Vector endPosition;
     Difficulty difficulty;
-
+    MenuManager& gameManager = MenuManager::instance();
     void addFireSphereAndLight(const Vector& pos);
 
 };

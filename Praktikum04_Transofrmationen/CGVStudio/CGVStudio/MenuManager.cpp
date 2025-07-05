@@ -1,4 +1,5 @@
 #include "MenuManager.h"
+#include <stdlib.h>
 
 void MenuManager::Draw() {
     switch (state) {
@@ -47,9 +48,19 @@ void MenuManager::drawStart() {
         state = MenuState::Playing;
     }
 
+    ImGui::Dummy(ImVec2(0, 10)); // Kleiner Abstand zwischen den Buttons
+
+
     if (ImGui::Button("Schwer", ImVec2(200, 40))) {
         difficulty = Difficulty::Hard;
         state = MenuState::Playing;
+    }
+
+    ImGui::Dummy(ImVec2(0, 10)); // Kleiner Abstand zwischen den Buttons
+
+    if (ImGui::Button("Multiplayer", ImVec2(200, 40))) {
+        difficulty = Difficulty::Hard;
+        state = MenuState::MultiPlayer;
     }
 
 
@@ -85,10 +96,22 @@ void MenuManager::drawGameOver() {
     ImGui::BeginGroup();
     ImGui::Text("Glueckwunsch!");
     if (ImGui::Button("Neustarten", ImVec2(200, 40))) {
-        //
+      
+        state = (lastMode == MenuState::MultiPlayer) ? MenuState::MultiPlayer : MenuState::Playing;
+        resetRequested = true;
     }
+
+    ImGui::Dummy(ImVec2(0, 10)); // Kleiner Abstand zwischen den Buttons
+
+    if (ImGui::Button("Zurück zum Menü", ImVec2(200, 40))) {
+        state = MenuState::Start;
+    }
+
+    ImGui::Dummy(ImVec2(0, 10)); // Kleiner Abstand zwischen den Buttons
+
+
     if (ImGui::Button("Beenden", ImVec2(200, 40))) {
-        // 
+        exit(0);
     }
     ImGui::EndGroup();
 

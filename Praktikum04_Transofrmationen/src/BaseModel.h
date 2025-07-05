@@ -28,14 +28,16 @@ public:
     virtual void calculateBoundingBox() = 0;
     virtual AABB& getBoundingBox() = 0;
     bool isEndPlatform;
-
     bool isPath = false;
+    bool isWall = false;
+    virtual Vector getSurfaceNormal() const { return surfaceNormal; }
+    virtual void setSurfaceNormal(const Vector& normal) { surfaceNormal = normal; }
 
 protected:
     Matrix Transform;
     BaseShader* pShader;
     bool DeleteShader;
-   
+    Vector surfaceNormal;
 
         
 };

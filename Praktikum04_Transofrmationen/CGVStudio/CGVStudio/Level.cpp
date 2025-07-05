@@ -14,11 +14,17 @@ Level::Level(int w, int h) : width(w), height(h) {
 
 void Level::generatePathWithLights() {
     generatePath(); 
-    addLightPlatforms();   
+    addLightPlatforms();
+    addWalls();
 }
 
 const std::vector<Plattform*>& Level::getPath() const {
     return path;
+}
+
+void Level::addWalls() {
+    //linke Wand
+   
 }
 
 void Level::generatePath() {

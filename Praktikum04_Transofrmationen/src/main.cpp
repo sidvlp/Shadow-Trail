@@ -79,6 +79,7 @@ int main () {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
+            MenuManager& menu = MenuManager::instance();
 
             
             switch (menu.state) {
@@ -87,6 +88,7 @@ int main () {
                 break;
 
             case MenuState::Playing:
+            case MenuState::MultiPlayer:
                 if (!initialized) {
                     App.initialize(menu.difficulty);  
                     App.start();

@@ -14,19 +14,35 @@ public:
 	virtual ~Player();
 	bool loadModels(const char* player_model);
 	void steer(float ForwardBackward, float LeftRight);
-	void update(float dtime, Camera& cam);
+	void drawDirectionVector(const BaseCamera& Cam);
+
+	void update(float dtime, Camera& cam, std::list<BaseModel*>& models);
 	virtual void draw(const BaseCamera& Cam);
+	void resolveCollision(float dot, const Vector& wallNormal, Matrix& totalTransform, float stepSize, const std::list<BaseModel*>& models);
+	void trySafeRotateZTowardsWall(const Vector& wallNormal, Matrix& totalTransform, const std::list<BaseModel*>& models, float maxAngleDeg);
+	void trySafeRotateZ(float desiredAngleDeg, Matrix& totalTransform, const std::list<BaseModel*>& models);
+	void resolveCollision(float dot, const Vector& wallNormal, Matrix& totalTransform, float stepSize);
+	Vector getWallNormal(const AABB& wallBox, const AABB& playerBox);
+	Vector computePenetrationCorrection(const AABB& playerBox, const AABB& wallBox);
 	bool checkGroundCollision(std::list<BaseModel*>& models);
 	bool checkIfOnEndPlatform(std::list<BaseModel*>& models);
-	//bool Player::checkGroundCollision(const AABB& a, const AABB& b);
 	float toRadian(float degrees);
 	void resetPosition();
 	void drawBoundingBox(const BaseCamera& Cam);
 	void updateBoundingBox();
 	AABB& getBoundingBox();
 	Vector getPosition() const;
-    void setPosition(const Vector& pos);
+	void setPosition(const Vector& pos);
+	bool checkWallCollision(const std::list<BaseModel*>& models, const Vector& movement, Vector& pushback, Vector* wallNormalOut);
 
+	bool checkWallCollision(const std::list<BaseModel*>& models, const Vector& movement, Vector& wallNormal);
+
+
+	bool rotationWouldCauseCollision(const std::list<BaseModel*>& models, const Matrix& testTransform);
+
+	void resolvePenetration(const std::list<BaseModel*>& models);
+
+	void drawOrientation(const BaseCamera& Cam);
 
 protected:
 	Model* player;
@@ -38,6 +54,7 @@ protected:
 	bool isFalling;
 	float fallVelocity;
 	const float GRAVITY = -9.81f;
+	Vector playerDirection;
 	Vector startPosition;
 
 };

@@ -130,6 +130,9 @@
     <ClCompile Include="ParticleShader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="LineModel.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Camera.h">
@@ -220,5 +223,8 @@
       <Filter>Quelldateien\utils</Filter>
     </ClInclude>
     <ClInclude Include="ParticleShader.h" />
+    <ClInclude Include="LineModel.h">
+      <Filter>Quelldateien\utils\models</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
