@@ -12,7 +12,7 @@ class Player : public Model
 public:
 	Player();
 	virtual ~Player();
-	bool loadModels(const char* player_model);
+	bool loadModels(const char* player_model, float scaleFactor);
 	void steer(float ForwardBackward, float LeftRight);
 	void drawDirectionVector(const BaseCamera& Cam);
 
@@ -25,11 +25,13 @@ public:
 	Vector getWallNormal(const AABB& wallBox, const AABB& playerBox);
 	Vector computePenetrationCorrection(const AABB& playerBox, const AABB& wallBox);
 	bool checkGroundCollision(std::list<BaseModel*>& models);
+	void updateFootBoundingBox();
 	bool checkIfOnEndPlatform(std::list<BaseModel*>& models);
 	float toRadian(float degrees);
 	void resetPosition();
 	void drawBoundingBox(const BaseCamera& Cam);
 	void updateBoundingBox();
+	void updateFootBoundingBox(const AABB& localBox, const Matrix& transform);
 	AABB& getBoundingBox();
 	Vector getPosition() const;
 	void setPosition(const Vector& pos);
@@ -50,6 +52,7 @@ protected:
 	Vector fb;
 	LineBoxModel* pBoundingBoxModel;
 	LineBoxModel* playerFootBoundingBox;
+	AABB footBoundingBox;
 	bool isGrounded;
 	bool isFalling;
 	float fallVelocity;

@@ -69,6 +69,8 @@ protected:
     Difficulty difficulty;
     MenuManager& gameManager = MenuManager::instance();
     void addFireSphereAndLight(const Vector& pos);
+    std::vector<BaseModel*> rotatingFires;
+
 
 };
 

@@ -1,2 +1,7 @@
-﻿  MenuManager.cpp
-  CGVStudio.vcxproj -> C:\Users\sidwa\Source\Repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe
+﻿  Player.cpp
+C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(65,31): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(387,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(394,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(401,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(409,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+  CGVStudio.vcxproj -> C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

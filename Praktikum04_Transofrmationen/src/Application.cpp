@@ -81,7 +81,7 @@ void Application::initialize(Difficulty difficulty) {
     player1 = new Player();
     player1->shader(pPhongShader, false);
     player1->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
-    player1->loadModels(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");
+    player1->loadModels(ASSET_DIRECTORY "12248_Bird_v1_L2.obj", 0.01f);
     Models.push_back(player1);
 
    
@@ -92,7 +92,7 @@ void Application::initialize(Difficulty difficulty) {
         player2 = new Player();
         player2->shader(pPhongShader, false);
         player2->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
-        player2->loadModels(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");
+        player2->loadModels(ASSET_DIRECTORY "13463_Australian_Cattle_Dog_v3.obj", 0.02f);
         Models.push_back(player2);
     }
 
@@ -149,6 +149,7 @@ void Application::initialize(Difficulty difficulty) {
             fire->shader(fireShader, true);
             fire->calculateBoundingBox();
             Models.push_back(fire);
+            rotatingFires.push_back(fire);
 
             // Punktlicht
             PointLight* fireLight = new PointLight(Vector(x, startY + 1.0f, z), Color(1.0f, 0.5f, 0.2f));
@@ -337,6 +338,26 @@ void Application::update(float dtime)
     for (auto* ps : fireSystems)
         ps->Update(dtime);
 
+    for (BaseModel* model : rotatingFires) {
+        Matrix current = model->transform();
+
+        // Mittelpunkt extrahieren
+        Vector pos(current.m[12], current.m[13], current.m[14]);
+
+        // Rückübersetzung zum Ursprung
+        Matrix toOrigin, backToPos, rotY;
+        toOrigin.translation(-pos);
+        backToPos.translation(pos);
+
+        // Y-Rotation
+        rotY.rotationY(toRadian(45.0f * dtime)); // z. B. 45 Grad pro Sekunde
+
+        // Neue Transformation anwenden
+        Matrix newTransform = backToPos * rotY * toOrigin * current;
+        model->transform(newTransform);
+    }
+
+
     Cam1.update();
     Cam2.update();
 }
@@ -516,6 +537,7 @@ void Application::addFireSphereAndLight(const Vector& pos) {
     fire->shader(fireShader, true);
     fire->calculateBoundingBox();
     Models.push_back(fire);
+    rotatingFires.push_back(fire);
 
     PointLight* light = new PointLight(pos, Color(1.0f, 0.5f, 0.2f));
     light->attenuation(Vector(1.0f, 0.1f, 0.05f));
