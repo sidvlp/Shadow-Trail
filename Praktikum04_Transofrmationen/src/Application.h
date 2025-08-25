@@ -49,6 +49,8 @@ public:
     float toRadian(float degrees);
     bool isGameOver() const;
     void restartGame();
+    void reinitialize(Difficulty difficulty);
+
     void Application::addWall(float width, float height, const Vector& position, const Vector& rotationAxis, float angleDegrees, const Vector& surfaceNormal);
 protected:
     Vector calc3DRay( float x, float y, Vector& Pos);
@@ -57,13 +59,14 @@ protected:
     int windowWidth;
     int windowHeight;
     GLFWwindow* pWindow;
-    Player* player1;
-    Player* player2;
+    Player* player1 = nullptr;
+    Player* player2 = nullptr;;
     float fb, lr;
     double mx, my;
     bool gameEnded = false;
     std::vector<ParticleSystem*> fireSystems;
-    ParticleShader* particleShader;
+    ParticleShader* particleShader = nullptr;
+
     float elapsedTime = 0.0f;
     Vector endPosition;
     Difficulty difficulty;

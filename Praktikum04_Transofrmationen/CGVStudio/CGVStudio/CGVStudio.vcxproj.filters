@@ -226,5 +226,8 @@
     <ClInclude Include="LineModel.h">
       <Filter>Quelldateien\utils\models</Filter>
     </ClInclude>
+    <ClInclude Include="miniaudio.h">
+      <Filter>Quelldateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

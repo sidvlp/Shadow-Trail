@@ -1,7 +1,32 @@
-﻿  Player.cpp
-C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(65,31): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(387,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
-C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(394,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
-C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(401,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
-C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(409,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
-  CGVStudio.vcxproj -> C:\Users\sidwa\source\repos\ComputerG5\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe
+﻿  Application.cpp
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.h(29,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
+  (Quelldatei „../../src/Application.cpp“ wird kompiliert)
+  
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(140,50): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(152,43): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(155,45): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(164,43): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(167,54): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(167,33): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(176,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(179,33): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(187,48): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(219,35): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
+  main.cpp
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.h(29,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
+  (Quelldatei „../../src/main.cpp“ wird kompiliert)
+  
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\main.cpp(109,32): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\main.cpp(91,11): warning C4101: "lastDtime": Unreferenzierte lokale Variable
+  ParticleShader.cpp
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.h(29,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
+  (Quelldatei „ParticleShader.cpp“ wird kompiliert)
+  
+  Player.cpp
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(65,31): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(272,78): error C2061: Syntaxfehler: Bezeichner "MenuState"
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(387,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(394,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(401,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(409,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+  Code wird generiert...

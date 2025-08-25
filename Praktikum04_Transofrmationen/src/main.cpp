@@ -1,4 +1,6 @@
-#ifdef WIN32
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #include <GL/glew.h>
 #include <glfw/glfw3.h>
 #else
@@ -6,22 +8,30 @@
 #define GLFW_INCLUDE_GLEXT
 #include <glfw/glfw3.h>
 #endif
-#include <stdio.h>
+
+#include <iostream>  // für std::cerr und std::cout
+#include <stdio.h>   // für printf
 #include "Application.h"
 #include "freeimage.h"
 #include "../CGVStudio/CGVStudio/MenuManager.h"
-
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-//test 2
+#include <fstream>
+#include <thread>
+#include <chrono>
+
+
 void PrintOpenGLVersion();
 
 
 int main () {
     FreeImage_Initialise();
+
+
+
     // start GL context and O/S window using the GLFW helper library
     if (!glfwInit ()) {
         fprintf (stderr, "ERROR: could not start GLFW3\n");
@@ -46,6 +56,7 @@ int main () {
     }
     glfwMakeContextCurrent (window);
 
+
 #if WIN32
 	glewExperimental = GL_TRUE;
 	glewInit();
@@ -56,67 +67,80 @@ int main () {
     // IMGUI Setup
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    const char* fontPath = "fonts/Bold.ttf";
+
+    // Prüfen, ob die Datei existiert:
+    std::ifstream fontFile(fontPath);
+    if (!fontFile) {
+        std::cerr << "[DEBUG] Font-Datei nicht gefunden: " << fontPath << "\n";
+    }
+    else {
+        std::cout << "[DEBUG] Font-Datei erfolgreich gefunden: " << fontPath << "\n";
+        ImGuiIO& io = ImGui::GetIO();
+        io.Fonts->AddFontDefault(); // Standardfont (Index 0)
+
+        io.Fonts->AddFontFromFileTTF(fontPath, 32.0f);
+    }
     ImGui::StyleColorsDark(); // oder Light/Classic
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
+
     float dtime = 0;
     float lastDtime;
     
     {
-        MenuManager menu;
+        MenuManager& menu = MenuManager::instance();
         Application App(window);
 
-        bool initialized = false;
+        // Sofort starten (default Easy)
+        App.initialize(Difficulty::Easy);
+        App.start();
+        menu.audioReadyForGame = true;
+
+        float dtime = 0;
+        float lastDtime = 0;
 
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             lastDtime = dtime;
             dtime = glfwGetTime();
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-            MenuManager& menu = MenuManager::instance();
 
-            
-            switch (menu.state) {
-            case MenuState::Start:
-                menu.Draw();
-                break;
+            menu.updateMusic();
 
-            case MenuState::Playing:
-            case MenuState::MultiPlayer:
-                if (!initialized) {
-                    App.initialize(menu.difficulty);  
-                    App.start();
-                    initialized = true;
-                }
+            // Reinitialisieren wenn Schwierigkeitsgrad geändert
+            if (menu.resetRequested) {
+                App.reinitialize(menu.difficulty);
+                menu.resetRequested = false;
+            }
 
+            // Spiellogik nur bei Spielstatus aktivieren
+            if (menu.state == MenuState::Playing || menu.state == MenuState::MultiPlayer) {
                 App.update(dtime - lastDtime);
 
                 if (App.isGameOver()) {
                     menu.state = MenuState::GameWon;
                 }
-
-                App.draw();
-                break;
-
-            case MenuState::GameWon:
-                menu.Draw();
-                break;
-
-            default:
-                break;
             }
+
+            App.draw();
+            if (menu.state == MenuState::Start || menu.state == MenuState::GameWon)
+                menu.Draw();
+
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
         }
 
+
+        
 
         App.end();
     }
@@ -125,6 +149,7 @@ int main () {
     ImGui::DestroyContext();
 
     glfwTerminate();
+
     return 0;
 }
 

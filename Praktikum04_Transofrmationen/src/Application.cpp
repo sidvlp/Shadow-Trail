@@ -39,233 +39,163 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam1(pWin),Cam2(pWin
 }
 
 void Application::initialize(Difficulty difficulty) {
-    
-
     this->difficulty = difficulty;
-    BaseModel* pModel;
-    TriangleBoxModel* boxModel;
-    ConstantShader* pConstShader;
-    PhongShader* pPhongShader;
-    Matrix translation, rotationY, rotationX, rotationZ, ursprung;
-   /* pModel = new LinePlaneModel(10, 10, 10, 10);
-    pConstShader = new ConstantShader();
-    pConstShader->color(Color(1, 1, 1));
-    pModel->shader(pConstShader, true);
-    Models.push_back(pModel);*/
-    pConstShader = new ConstantShader();
-    pConstShader->color(Color(0,0,1));
+    Matrix translation, rotationY, rotationX, rotationZ;
 
-    int width;
-    int height;
-    float wallHeight = 20.0f;
-    float wallOffset = 1.0f;
-   
-    float xOffSet = 0;
-    float xOffSet2 = 0;
-    float zOffSet = 0;
+    int width = (difficulty == Difficulty::Easy) ? 10 : 15;
+    int height = (difficulty == Difficulty::Easy) ? 10 : 20;
+    float offset = 0.5f;
+    float xOffSet = (difficulty == Difficulty::Hard) ? 5.0f : 0.0f;
+    float xOffSet2 = (difficulty == Difficulty::Hard) ? 2.5f : 0.0f;
+    float zOffSet = (difficulty == Difficulty::Hard) ? 5.0f : 0.0f;
 
-    if (difficulty == Difficulty::Easy) {
-         width = 10;
-         height = 10;
-         
-    }
-    else if (difficulty == Difficulty::Hard) {
-         width = 15;
-         height = 20;
-         xOffSet = 5;
-         xOffSet2 = 2.5;
-         zOffSet = 5;
-    }
-
-    pPhongShader = new PhongShader();
+    // Spieler 1
     player1 = new Player();
-    player1->shader(pPhongShader, false);
+    player1->shader(new PhongShader(), false);
     player1->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
     player1->loadModels(ASSET_DIRECTORY "12248_Bird_v1_L2.obj", 0.01f);
     Models.push_back(player1);
 
-   
-    
-    if (gameManager.state == MenuState::MultiPlayer)
-    {
-        pPhongShader = new PhongShader();
+    // Spieler 2 (optional)
+    if (gameManager.state == MenuState::MultiPlayer) {
         player2 = new Player();
-        player2->shader(pPhongShader, false);
+        player2->shader(new PhongShader(), false);
         player2->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
         player2->loadModels(ASSET_DIRECTORY "13463_Australian_Cattle_Dog_v3.obj", 0.02f);
         Models.push_back(player2);
     }
 
-    Level level(width, height); 
+    // Level mit Pfad und Lichtplattformen
+    Level level(width, height);
     level.generatePathWithLights();
+    const auto path = level.getPath();
 
-    auto path = level.getPath();
-    //std::reverse(path.begin(), path.end());
-    float offset = 0.5f;
-
-    //float startX = -((width - 1) / 2.0f);
-    float startY = 0.0f;
-    //float startZ = -((height - 1) / 2.0f);
     float startX = 0.0f;
+    float startY = 0.0f;
     float startZ = 0.0f;
 
     const Texture* fireTex = Texture::LoadShared(ASSET_DIRECTORY "fireTex2.bmp");
     particleShader = new ParticleShader(fireTex);
-    particleShader->particleColor(Color(1.0f, 0.5f, 0.0f));  // Orange
+    particleShader->particleColor(Color(1.0f, 0.5f, 0.0f));
 
-    for (auto plattform : path) {
-        TriangleBoxModel* box = new TriangleBoxModel(1, 1, 1);
-
-        PhongShader* pathShader = new PhongShader();
+    for (auto* plattform : path) {
+        auto* box = new TriangleBoxModel(1, 1, 1);
+        auto* pathShader = new PhongShader();
         pathShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "brick.jpg"));
         box->shader(pathShader, true);
-
         box->isPath = true;
 
         Matrix translation;
         float x = startX + plattform->x;
         float z = startZ + plattform->z;
         translation.translation(x, startY, z);
-
         box->transform(box->transform() * translation);
         box->calculateBoundingBox();
         Models.push_back(box);
 
         std::cout << (plattform->isLight ? "Licht" : "Pfad")
-            << " Plattform: (" << plattform->x << ", " << plattform->z << ")" << std::endl;
+            << " Plattform: (" << plattform->x << ", " << plattform->z << ")\n";
 
         if (plattform->isLight) {
             box->isPath = false;
 
-            // Feuerkugel
-
-            PhongShader* fireShader = new PhongShader();
+            auto* fire = new TriangleSphereModel(0.5f);
+            Matrix fireTrans;
+            fireTrans.translation(x, startY + 1.0f, z);
+            fire->transform(fire->transform() * fireTrans);
+            auto* fireShader = new PhongShader();
             fireShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "fire.jpg"));
-
-            TriangleSphereModel* fire = new TriangleSphereModel(0.5f);
-            Matrix fireTranslation;
-            fireTranslation.translation(x, startY + 1.0f, z);  // Y+1 für "über der Plattform"
-            fire->transform(fire->transform() * fireTranslation);
             fire->shader(fireShader, true);
             fire->calculateBoundingBox();
             Models.push_back(fire);
             rotatingFires.push_back(fire);
 
-            // Punktlicht
-            PointLight* fireLight = new PointLight(Vector(x, startY + 1.0f, z), Color(1.0f, 0.5f, 0.2f));
-            fireLight->attenuation(Vector(1.0f, 0.1f, 0.05f));  // optional feinjustieren
-            ShaderLightMapper::instance().addLight(fireLight);
+            auto* light = new PointLight(Vector(x, startY + 1.0f, z), Color(1.0f, 0.5f, 0.2f));
+            light->attenuation(Vector(1.0f, 0.1f, 0.05f));
+            ShaderLightMapper::instance().addLight(light);
 
-            Vector firePos(x, startY + 1.0f, z);
-            ParticleSystem* fireSys = new ParticleSystem(200, firePos, ParticleSpawnMode::Default);
-            fireSystems.push_back(fireSys);
+            fireSystems.push_back(new ParticleSystem(200, Vector(x, startY + 1.0f, z), ParticleSpawnMode::Default));
         }
     }
 
-   // pModel = new Model(ASSET_DIRECTORY "13463_Australian_Cattle_Dog_v3.obj");
-  //  pModel = new Model(ASSET_DIRECTORY "12248_Bird_v1_L2.obj");s
-  
-
-//    pPhongShader = new PhongShader();
-////   pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "torchstick.png"));
-//    player = new Player();
-//    player->shader(pPhongShader, false);
-//    player->loadModels(ASSET_DIRECTORY "torchstick.fbx");
-//    Models.push_back(player);
-   
+    // Zusätzliche Feuerkugeln bei Start- und Endplattform
     float fireY = 1.0f;
     float fireRadius = 0.5f;
     float platformDepth = 5.0f;
 
-    // Plattformpositionen (aus den translation.translation(...) Zeilen)
     float startXPlat = width / 2.0f - offset;
     float startZPlat = -2.5f - offset;
-
     float endXPlat = width / 2.0f - offset;
     float endZPlat = height + 2.5f - offset;
 
-    // Hinterste Z-Positionen der Plattformen (Z-Mitte + halbe Tiefe)
     float rearZ_start = startZPlat + platformDepth / 2.0f;
     float rearZ_end = endZPlat + platformDepth / 2.0f;
 
-    // Startplattform: hinten links & rechts
-    Vector fire1(startXPlat - width / 2.0f + fireRadius, fireY, rearZ_start - platformDepth + fireRadius);
-    Vector fire2(startXPlat + width / 2.0f - fireRadius, fireY, rearZ_start - platformDepth + fireRadius);
+    addFireSphereAndLight(Vector(startXPlat - width / 2.0f + fireRadius, fireY, rearZ_start - platformDepth + fireRadius));
+    addFireSphereAndLight(Vector(startXPlat + width / 2.0f - fireRadius, fireY, rearZ_start - platformDepth + fireRadius));
+    addFireSphereAndLight(Vector(endXPlat - width / 2.0f + fireRadius, fireY, rearZ_end - fireRadius));
+    addFireSphereAndLight(Vector(endXPlat + width / 2.0f - fireRadius, fireY, rearZ_end - fireRadius));
 
-    // Endplattform: hinten links & rechts
-    Vector fire3(endXPlat - width / 2.0f + fireRadius, fireY, rearZ_end - fireRadius);
-    Vector fire4(endXPlat + width / 2.0f - fireRadius, fireY, rearZ_end - fireRadius);
+    // Startplattform
+    auto* startPlatform = new TrianglePlaneModel(width, 5, 1, 1);
+    auto* wallShader = new PhongShader();
+    wallShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "brick_platform.jpg"));
+    startPlatform->shader(wallShader, false);
+    translation.translation(width / 2.0f - offset, 0.5f, -2.5f - offset);
+    startPlatform->transform(startPlatform->transform() * translation);
+    startPlatform->calculateBoundingBox();
+    Models.push_back(startPlatform);
 
-    // Platzieren
-    addFireSphereAndLight(fire1);
-    addFireSphereAndLight(fire2);
-    addFireSphereAndLight(fire3);
-    addFireSphereAndLight(fire4);
+    BaseModel* pModel = nullptr;
 
-    pPhongShader = new PhongShader();
-    pModel = new TrianglePlaneModel(width, 5, 1,1);
-    //pModel->isEndPlatform = true;
-    pConstShader = new ConstantShader();
-    pConstShader->color(Color(1, 0, 0));
-    pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "brick_platform.jpg"));
-    pModel->shader(pPhongShader, true);
-    translation.translation(width / 2.0f -offset, 0.5f, 0 - 2.5f -offset);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
-    Models.push_back(pModel);
-
-    //linke Wand
+    // Linke Wand
     pModel = new TrianglePlaneModel(width * 2, 20, 1, 1);
     pModel->isWall = true;
-    pModel->shader(pPhongShader, true);
+    pModel->shader(wallShader, false);
     translation.translation(-0.5, 10.5, 4.5 + zOffSet);
     rotationY.rotationY(toRadian(90));
     rotationZ.rotationZ(toRadian(-90));
-    pModel->transform(pModel->transform()* translation* rotationZ* rotationY);
+    pModel->transform(pModel->transform() * translation * rotationZ * rotationY);
     pModel->setSurfaceNormal(Vector(1, 0, 0));
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
 
-    //rechte Wand
+    // Rechte Wand
     pModel = new TrianglePlaneModel(width * 2, 20, 1, 1);
     pModel->isWall = true;
-    pModel->shader(pPhongShader, true);
+    pModel->shader(wallShader, false);
     translation.translation(9.5 + xOffSet, 10.5, 4.5 + zOffSet);
     rotationY.rotationY(toRadian(90));
     rotationZ.rotationZ(toRadian(90));
-    pModel->transform(pModel->transform()* translation* rotationZ* rotationY);
+    pModel->transform(pModel->transform() * translation * rotationZ * rotationY);
     pModel->setSurfaceNormal(Vector(-1, 0, 0));
     pModel->calculateBoundingBox();
     Models.push_back(pModel);
-  
 
-    ////hintere Wand
+    // Hintere Wand
     pModel = new TrianglePlaneModel(width, 20, 1, 1);
     pModel->isWall = true;
-    pModel->shader(pPhongShader, true);
+    pModel->shader(wallShader, false);
     translation.translation(4.5 + xOffSet2, 10.5, -5.5);
     rotationX.rotationX(toRadian(90));
-    rotationZ.rotationZ(toRadian(90));
-    pModel->transform(pModel->transform()* translation* rotationX);
+    pModel->transform(pModel->transform() * translation * rotationX);
     pModel->setSurfaceNormal(Vector(0, 0, 1));
     pModel->calculateBoundingBox();
-    Models.push_back(pModel);   
-    
-    pModel = new TrianglePlaneModel(width, 5, 1, 1);
-    pConstShader = new ConstantShader();
-    pConstShader->color(Color(1, 0, 0));
-    pModel->shader(pPhongShader, true);
-    translation.translation(width / 2.0f -offset, 0.5f, height + 2.5f -offset);
-    pModel->transform(pModel->transform() * translation);
-    pModel->calculateBoundingBox();
     Models.push_back(pModel);
-    
 
-    endPosition = Vector(width/2.0f-offset, 0.5f, -2.5f);
-    ParticleSystem* particleSystem = new ParticleSystem(200, endPosition, ParticleSpawnMode::Ring);
-    fireSystems.push_back(particleSystem);
-    
+    // Endplattform
+    auto* endPlatform = new TrianglePlaneModel(width, 5, 1, 1);
+    endPlatform->shader(wallShader, false);
+    translation.translation(width / 2.0f - offset, 0.5f, height + 2.5f - offset);
+    endPlatform->transform(endPlatform->transform() * translation);
+    endPlatform->calculateBoundingBox();
+    Models.push_back(endPlatform);
+
+    endPosition = Vector(width / 2.0f - offset, 0.5f, -2.5f);
+    fireSystems.push_back(new ParticleSystem(200, endPosition, ParticleSpawnMode::Ring));
 }
+
+
 
 
 void Application::start()
@@ -503,11 +433,31 @@ void Application::drawScene(Camera& cam) {
 
 void Application::end()
 {
-    for( ModelList::iterator it = Models.begin(); it != Models.end(); ++it )
-        delete *it;
-    
+    for (BaseModel* model : Models)
+        delete model;
     Models.clear();
+
+    for (ParticleSystem* ps : fireSystems)
+        delete ps;
+    fireSystems.clear();
+
+    rotatingFires.clear(); // Die Fire-Sphere-Modelle sind in Models enthalten → NICHT löschen
+
+    // ❌ NICHT MEHR NÖTIG (schon oben gelöscht)
+    // delete player1;
+    player1 = nullptr;
+
+    if (player2) {
+        // ❌ NICHT MEHR NÖTIG (schon oben gelöscht)
+        // delete player2;
+        player2 = nullptr;
+    }
+
+    ShaderLightMapper::instance().clear();
 }
+
+
+
 
 bool Application::isGameOver() const {
     return gameEnded;
@@ -543,4 +493,17 @@ void Application::addFireSphereAndLight(const Vector& pos) {
     light->attenuation(Vector(1.0f, 0.1f, 0.05f));
     ShaderLightMapper::instance().addLight(light);
 }
+
+void Application::reinitialize(Difficulty newDifficulty) {
+    std::cout << "Reinitialize called with difficulty: " << (int)newDifficulty << std::endl;
+    end();
+    std::cout << "End done." << std::endl;
+    initialize(newDifficulty);
+    std::cout << "Init done." << std::endl;
+    start();
+    std::cout << "Start done." << std::endl;
+}
+
+
+
 

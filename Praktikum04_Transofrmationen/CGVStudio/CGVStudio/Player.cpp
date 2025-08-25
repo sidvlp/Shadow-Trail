@@ -269,7 +269,7 @@ void Player::steer(float ForwardBackward, float LeftRight)
 	
 }
 
-void Player::update(float dtime, Camera& cam, std::list<BaseModel*>& models)
+void Player::update(float dtime, Camera& cam, std::list<BaseModel*>& models, MenuState state)
 {
 	Matrix playerMove, playerRot, playerUrsprung;
 	playerUrsprung = this->player->transform();

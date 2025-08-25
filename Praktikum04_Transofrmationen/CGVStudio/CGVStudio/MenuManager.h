@@ -1,5 +1,8 @@
 #pragma once
 #include "imgui.h"
+#include <string>
+#include "miniaudio.h"
+
 enum class MenuState {
     Start,
     Playing,
@@ -28,8 +31,20 @@ public:
     bool resetRequested = false;
     MenuState lastMode = MenuState::Playing;
     bool startGame = false;
+    void updateMusic();
+    bool audioReadyForGame = false;
+    void DrawWaveText(const char* text);
+
 private:
     void drawStart();
     void drawGameOver();
+
+    ma_engine engine;
+    ma_sound currentMusic;
+    std::string loadedTrack = "";
+    bool musicInitialized = false;
+
+    void drawBackgroundOverlay(ImU32 color);
+    void centerWindowStart(const char* title);
  
 };
