@@ -45,8 +45,8 @@ int main () {
     glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
     
-    const int WindowWidth = 800;
-    const int WindowHeight = 600;
+    const int WindowWidth = 1400;
+    const int WindowHeight = 720;
     
     GLFWwindow* window = glfwCreateWindow (WindowWidth, WindowHeight, "Computergrafik - Hochschule Osnabrück", NULL, NULL);
     if (!window) {
@@ -114,6 +114,22 @@ int main () {
 
             menu.updateMusic();
 
+            static MenuState lastLoggedState = MenuState::Start;
+            if (menu.state != lastLoggedState) {
+                std::cout << "[DEBUG] MenuState geändert zu: ";
+                switch (menu.state) {
+                case MenuState::Start:       std::cout << "Start\n"; break;
+                case MenuState::SinglePlayer:     std::cout << "Playing\n"; break;
+                case MenuState::MultiPlayer: std::cout << "MultiPlayer\n"; break;
+                case MenuState::GameWon:     std::cout << "GameWon\n"; break;
+                case MenuState::Loading:     std::cout << "Loading\n"; break;
+                case MenuState::LoadingStarted: std::cout << "LoadingStarted\n"; break;
+                default: std::cout << "Unbekannt\n"; break;
+                }
+                lastLoggedState = menu.state;
+            }
+
+
             if (menu.state == MenuState::Loading) {
                 menu.Draw();
 
@@ -122,6 +138,8 @@ int main () {
                 glfwSwapBuffers(window);
 
                 menu.state = MenuState::LoadingStarted;
+                App.gameEnded = false;
+
                 continue;
             }
 
@@ -130,7 +148,7 @@ int main () {
                     menu.state = MenuState::MultiPlayer;
                 }
                 else {
-                    menu.state = MenuState::Playing;
+                    menu.state = MenuState::SinglePlayer;
                 }
                 App.reinitialize(menu.difficulty);
                 menu.loadingTriggered = false;
@@ -138,19 +156,14 @@ int main () {
                
             }
 
-            if (menu.state == MenuState::Playing || menu.state == MenuState::MultiPlayer) {
+            if ((menu.state == MenuState::SinglePlayer || menu.state == MenuState::MultiPlayer) && !menu.isPaused) {
                 App.update(dtime - lastDtime);
-                if (App.isGameOver())
+                if (App.gameEnded)
                     menu.state = MenuState::GameWon;
             }
 
+            menu.Draw();
             App.draw();
-
-            if (menu.state == MenuState::Start ||
-                menu.state == MenuState::GameWon)
-            {
-                menu.Draw();
-            }
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

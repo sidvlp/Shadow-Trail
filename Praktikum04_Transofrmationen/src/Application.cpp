@@ -459,12 +459,6 @@ void Application::end()
 }
 
 
-
-
-bool Application::isGameOver() const {
-    return gameEnded;
-}
-
 void Application::restartGame() {
     gameEnded = false;
     player1->resetPosition();  

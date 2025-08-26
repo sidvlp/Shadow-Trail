@@ -9,8 +9,9 @@
 void MenuManager::Draw() {
     updateMusic();
 
-    // Einheitlicher halbtransparenter Hintergrund
-    drawBackgroundOverlay(IM_COL32(0, 0, 0, 110));
+    if (state == MenuState::Start || state == MenuState::GameWon || state == MenuState::Loading || isPaused) {
+        drawBackgroundOverlay(IM_COL32(0, 0, 0, 110));
+    }
 
     switch (state) {
     case MenuState::Start:
@@ -21,6 +22,12 @@ void MenuManager::Draw() {
         break;
     case MenuState::Loading:
         drawLoading();
+        break;
+    case MenuState::SinglePlayer:
+        drawPauseButton(); 
+        break;
+    case MenuState::MultiPlayer:
+        drawPauseButton();
         break;
     default:
         break;
@@ -83,15 +90,21 @@ void MenuManager::drawStart() {
 void MenuManager::drawGameOver() {
     centerWindowStart("Glueckwunsch!");
 
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.9f, 0.9f, 0.9f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+
     if (ImGui::Button("Neustarten", ImVec2(200, 40))) {
-        state = (lastMode == MenuState::MultiPlayer) ? MenuState::MultiPlayer : MenuState::Playing;
+        state = (lastMode == MenuState::MultiPlayer) ? MenuState::MultiPlayer : MenuState::SinglePlayer;
         resetRequested = true;
     }
 
     ImGui::Dummy(ImVec2(0, 10));
 
-    if (ImGui::Button("Zurück zum Menü", ImVec2(200, 40))) {
+    if (ImGui::Button("Zurueck zum Menue", ImVec2(200, 40))) {
         state = MenuState::Start;
+
     }
 
     ImGui::Dummy(ImVec2(0, 10));
@@ -100,9 +113,12 @@ void MenuManager::drawGameOver() {
         exit(0);
     }
 
+    ImGui::PopStyleColor(4);
+
     ImGui::EndGroup();
     ImGui::End();
 }
+
 
 void MenuManager::drawLoading() {
     ImVec2 winSize(430, 150);
@@ -128,6 +144,71 @@ void MenuManager::drawLoading() {
     ImGui::End();
     ImGui::PopStyleColor();
 }
+
+void MenuManager::drawPauseButton() {
+    if (showPauseMenu) {
+        drawPauseMenu();
+        return;
+    }
+
+    ImVec2 buttonSize(70, 25); // Etwas breiter für Schrift
+    ImVec2 pos(ImGui::GetIO().DisplaySize.x - buttonSize.x - 10, 10);
+
+    ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(buttonSize, ImGuiCond_Always);
+
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.9f, 0.9f, 0.9f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+    ImGui::Begin("PauseButton", nullptr,
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoBackground |
+        ImGuiWindowFlags_NoDecoration);
+
+
+    if (ImGui::Button("Pause", buttonSize)) {
+        showPauseMenu = true;
+        isPaused = true;
+    }
+
+    ImGui::End();
+    ImGui::PopStyleColor(4);
+}
+
+
+
+void MenuManager::drawPauseMenu() {
+    centerWindowStart("Pausiert");
+
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.9f, 0.9f, 0.9f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+    if (ImGui::Button("Fortfahren", ImVec2(200, 40))) {
+        showPauseMenu = false;
+        isPaused = false;
+    }
+
+    ImGui::Dummy(ImVec2(0, 10));
+
+    if (ImGui::Button("Beenden", ImVec2(200, 40))) {
+        state = MenuState::Start;
+        showPauseMenu = false;
+        isPaused = false;
+    }
+
+    ImGui::PopStyleColor(4);
+
+    ImGui::EndGroup();
+    ImGui::End();
+}
+
 
 
 
@@ -185,12 +266,6 @@ void MenuManager::DrawWaveText(const char* text) {
 }
 
 
-
-
-
-
-
-
 void MenuManager::updateMusic() {
     if (!musicInitialized) {
         ma_engine_init(NULL, &engine);
@@ -204,7 +279,7 @@ void MenuManager::updateMusic() {
     case MenuState::GameWon:
         track = "menu_music.mp3";
         break;
-    case MenuState::Playing:
+    case MenuState::SinglePlayer:
     case MenuState::MultiPlayer:
         if (!audioReadyForGame) return;
         track = "game_music.mp3";

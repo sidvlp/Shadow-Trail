@@ -5,11 +5,11 @@
 
 enum class MenuState {
     Start,
-    Playing,
+    SinglePlayer,
     GameWon,
     MultiPlayer,
     Loading,
-    LoadingStarted
+    LoadingStarted,
 };
 
 enum class Difficulty {
@@ -31,20 +31,25 @@ public:
         return mgr;
     }
     bool resetRequested = false;
-    MenuState lastMode = MenuState::Playing;
+    MenuState lastMode = MenuState::SinglePlayer;
     bool startGame = false;
     void updateMusic();
     bool audioReadyForGame = false;
     void DrawWaveText(const char* text);
     bool loadingTriggered = false;
     bool multiplayerSelected = false;
-
+    bool isPaused = false;
 
 
 private:
     void drawStart();
     void drawGameOver();
     void drawLoading();
+    void drawPauseButton();
+    void drawPauseMenu();
+
+    bool showPauseMenu = false;
+
 
     ma_engine engine;
     ma_sound currentMusic;

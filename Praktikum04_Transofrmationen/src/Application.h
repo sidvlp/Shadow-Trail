@@ -47,7 +47,7 @@ public:
     void keyPressPlayer1(float&, float&);
     void keyPressPlayer2(float&, float&);
     float toRadian(float degrees);
-    bool isGameOver() const;
+    bool gameEnded = false;
     void restartGame();
     void reinitialize(Difficulty difficulty);
 
@@ -63,7 +63,6 @@ protected:
     Player* player2 = nullptr;;
     float fb, lr;
     double mx, my;
-    bool gameEnded = false;
     std::vector<ParticleSystem*> fireSystems;
     ParticleShader* particleShader = nullptr;
 
