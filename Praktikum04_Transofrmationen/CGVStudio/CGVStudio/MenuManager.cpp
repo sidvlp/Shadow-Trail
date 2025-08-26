@@ -4,12 +4,13 @@
 
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
+#include <GL/glew.h>
 
 void MenuManager::Draw() {
     updateMusic();
 
     // Einheitlicher halbtransparenter Hintergrund
-drawBackgroundOverlay(IM_COL32(0, 0, 0, 110));
+    drawBackgroundOverlay(IM_COL32(0, 0, 0, 110));
 
     switch (state) {
     case MenuState::Start:
@@ -17,6 +18,9 @@ drawBackgroundOverlay(IM_COL32(0, 0, 0, 110));
         break;
     case MenuState::GameWon:
         drawGameOver();
+        break;
+    case MenuState::Loading:
+        drawLoading();
         break;
     default:
         break;
@@ -47,24 +51,27 @@ void MenuManager::drawStart() {
 
     if (ImGui::Button("Leicht", ImVec2(200, 40))) {
         difficulty = Difficulty::Easy;
-        resetRequested = true;
-        state = MenuState::Playing;
+        multiplayerSelected = false;
+        state = MenuState::Loading;
+        loadingTriggered = true;
     }
 
     ImGui::Dummy(ImVec2(0, 10));
 
     if (ImGui::Button("Schwer", ImVec2(200, 40))) {
         difficulty = Difficulty::Hard;
-        resetRequested = true;
-        state = MenuState::Playing;
+        multiplayerSelected = false;
+        state = MenuState::Loading;
+        loadingTriggered = true;
     }
 
     ImGui::Dummy(ImVec2(0, 10));
 
     if (ImGui::Button("Multiplayer", ImVec2(200, 40))) {
         difficulty = Difficulty::Hard;
-        resetRequested = true;
-        state = MenuState::MultiPlayer;
+        multiplayerSelected = true;
+        state = MenuState::Loading;
+        loadingTriggered = true;
     }
 
     ImGui::PopStyleColor(4);
@@ -96,6 +103,33 @@ void MenuManager::drawGameOver() {
     ImGui::EndGroup();
     ImGui::End();
 }
+
+void MenuManager::drawLoading() {
+    ImVec2 winSize(430, 150);
+    ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f - winSize.x * 0.5f,
+        ImGui::GetIO().DisplaySize.y * 0.5f - winSize.y * 0.5f);
+
+    ImGui::SetNextWindowPos(center, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(winSize, ImGuiCond_Always);
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 0.95f)); 
+    ImGui::Begin("Ladefenster", nullptr,
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoTitleBar);
+
+    ImGui::SetCursorPosY(60); // vertikal zentrieren
+    const char* loadingText = "Ihr Level wird geladen...\nBitte einen Moment Geduld.";
+    ImVec2 textSize = ImGui::CalcTextSize(loadingText);
+    ImGui::SetCursorPosX((winSize.x - textSize.x) * 0.5f);
+    ImGui::TextWrapped("%s", loadingText);
+
+    ImGui::End();
+    ImGui::PopStyleColor();
+}
+
+
 
 void MenuManager::centerWindowStart(const char* title) {
     ImGuiViewport* viewport = ImGui::GetMainViewport();

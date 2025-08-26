@@ -144,7 +144,7 @@ void Level::addLightPlatforms() {
                 platform->isLight = true;
                 lightPlatforms.push_back(platform);
                 path.push_back(platform);
-                std::cout << "Licht hinzugefügttt bei (" << platform->x << ", " << platform->z << ")\n";
+                //std::cout << "Licht hinzugefügttt bei (" << platform->x << ", " << platform->z << ")\n";
 
                 // Hier ein paar Pfadblöcke überspringen, z.B. 4
                 i += 4;
@@ -155,10 +155,12 @@ void Level::addLightPlatforms() {
         i++; // Normal weiter
     }
 
+    /*
     std::cout << "\n=== Lichtplattformen ===\n";
     for (Plattform* p : lightPlatforms) {
         std::cout << "Licht bei (" << p->x << ", " << p->z << ")\n";
     }
+    */
 }
 
 

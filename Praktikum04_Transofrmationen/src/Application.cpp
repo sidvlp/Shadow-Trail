@@ -93,8 +93,10 @@ void Application::initialize(Difficulty difficulty) {
         box->calculateBoundingBox();
         Models.push_back(box);
 
+        /*
         std::cout << (plattform->isLight ? "Licht" : "Pfad")
             << " Plattform: (" << plattform->x << ", " << plattform->z << ")\n";
+        */
 
         if (plattform->isLight) {
             box->isPath = false;
@@ -389,7 +391,7 @@ void Application::draw()
     particleShader->setTime(elapsedTime);
 
     if (MenuManager::instance().state == MenuState::MultiPlayer) {
-      
+
         glViewport(0, 0, windowWidth / 2, windowHeight);
         Cam1.update();
         drawScene(Cam1);
@@ -495,13 +497,9 @@ void Application::addFireSphereAndLight(const Vector& pos) {
 }
 
 void Application::reinitialize(Difficulty newDifficulty) {
-    std::cout << "Reinitialize called with difficulty: " << (int)newDifficulty << std::endl;
     end();
-    std::cout << "End done." << std::endl;
     initialize(newDifficulty);
-    std::cout << "Init done." << std::endl;
     start();
-    std::cout << "Start done." << std::endl;
 }
 
 

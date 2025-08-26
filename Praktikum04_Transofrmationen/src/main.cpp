@@ -114,30 +114,49 @@ int main () {
 
             menu.updateMusic();
 
-            // Reinitialisieren wenn Schwierigkeitsgrad geändert
-            if (menu.resetRequested) {
-                App.reinitialize(menu.difficulty);
-                menu.resetRequested = false;
+            if (menu.state == MenuState::Loading) {
+                menu.Draw();
+
+                ImGui::Render();
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                glfwSwapBuffers(window);
+
+                menu.state = MenuState::LoadingStarted;
+                continue;
             }
 
-            // Spiellogik nur bei Spielstatus aktivieren
+            if (menu.state == MenuState::LoadingStarted) {
+                if (menu.multiplayerSelected) {
+                    menu.state = MenuState::MultiPlayer;
+                }
+                else {
+                    menu.state = MenuState::Playing;
+                }
+                App.reinitialize(menu.difficulty);
+                menu.loadingTriggered = false;
+                menu.audioReadyForGame = true;
+               
+            }
+
             if (menu.state == MenuState::Playing || menu.state == MenuState::MultiPlayer) {
                 App.update(dtime - lastDtime);
-
-                if (App.isGameOver()) {
+                if (App.isGameOver())
                     menu.state = MenuState::GameWon;
-                }
             }
 
             App.draw();
-            if (menu.state == MenuState::Start || menu.state == MenuState::GameWon)
-                menu.Draw();
 
+            if (menu.state == MenuState::Start ||
+                menu.state == MenuState::GameWon)
+            {
+                menu.Draw();
+            }
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
         }
+
 
 
         

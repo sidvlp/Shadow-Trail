@@ -7,7 +7,9 @@ enum class MenuState {
     Start,
     Playing,
     GameWon,
-    MultiPlayer
+    MultiPlayer,
+    Loading,
+    LoadingStarted
 };
 
 enum class Difficulty {
@@ -34,10 +36,15 @@ public:
     void updateMusic();
     bool audioReadyForGame = false;
     void DrawWaveText(const char* text);
+    bool loadingTriggered = false;
+    bool multiplayerSelected = false;
+
+
 
 private:
     void drawStart();
     void drawGameOver();
+    void drawLoading();
 
     ma_engine engine;
     ma_sound currentMusic;
