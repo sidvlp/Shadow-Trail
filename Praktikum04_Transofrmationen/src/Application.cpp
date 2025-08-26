@@ -49,6 +49,7 @@ void Application::initialize(Difficulty difficulty) {
     float xOffSet2 = (difficulty == Difficulty::Hard) ? 2.5f : 0.0f;
     float zOffSet = (difficulty == Difficulty::Hard) ? 5.0f : 0.0f;
 
+
     // Spieler 1
     player1 = new Player();
     player1->shader(new PhongShader(), false);
@@ -406,6 +407,16 @@ void Application::draw()
         for (auto* ps : fireSystems)
             ps->Render(Cam2.getProjectionMatrix() * Cam2.getViewMatrix());
     }
+    if (MenuManager::instance().state == MenuState::Start || MenuManager::instance().state == MenuState::GameWon) {
+        // Feste Menü-Kamera setzen
+        glViewport(0, 0, windowWidth, windowHeight);
+
+        Cam1.setPosition(Vector(8.1023f, 4.16865f, 14.3518f));
+        Cam1.setTarget(Vector(0.0f, 0.0f, 0.0f));
+        Cam1.update();
+        drawScene(Cam1);
+    }
+
     else {
         glViewport(0, 0, windowWidth, windowHeight);
         Cam1.update();
