@@ -203,18 +203,14 @@ void Application::initialize(Difficulty difficulty) {
 
 void Application::start()
 {
-    glEnable (GL_DEPTH_TEST); // enable depth-testing
-    glDepthFunc (GL_LESS); // depth-testing interprets a smaller value as "closer"
+    glEnable (GL_DEPTH_TEST); 
+    glDepthFunc (GL_LESS); 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    /*
-    glEnable(GL_PROGRAM_POINT_SIZE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    */
+  
 }
 
 float Application::toRadian(float degrees) {
@@ -407,16 +403,6 @@ void Application::draw()
         for (auto* ps : fireSystems)
             ps->Render(Cam2.getProjectionMatrix() * Cam2.getViewMatrix());
     }
-    if (MenuManager::instance().state == MenuState::Start || MenuManager::instance().state == MenuState::GameWon) {
-        // Feste Menü-Kamera setzen
-        glViewport(0, 0, windowWidth, windowHeight);
-
-        Cam1.setPosition(Vector(8.1023f, 4.16865f, 14.3518f));
-        Cam1.setTarget(Vector(0.0f, 0.0f, 0.0f));
-        Cam1.update();
-        drawScene(Cam1);
-    }
-
     else {
         glViewport(0, 0, windowWidth, windowHeight);
         Cam1.update();
@@ -425,6 +411,16 @@ void Application::draw()
         for (auto* ps : fireSystems)
             ps->Render(Cam1.getProjectionMatrix() * Cam1.getViewMatrix());
     }
+    if (MenuManager::instance().state == MenuState::Start || MenuManager::instance().state == MenuState::GameWon) {
+        glViewport(0, 0, windowWidth, windowHeight);
+
+        Cam1.setPosition(Vector(8.1023f, 4.16865f, 14.3518f));
+        Cam1.setTarget(Vector(0.0f, 0.0f, 0.0f));
+        Cam1.update();
+        drawScene(Cam1);
+    }
+
+  
 
     GLenum Error = glGetError();
     assert(Error == 0);
@@ -477,10 +473,7 @@ void Application::restartGame() {
         player2->resetPosition();
     }
 
-    
-
-    // Reset-Modus speichern (wird aus Menü gesetzt)
-    MenuManager::instance().lastMode = MenuManager::instance().state;
+        MenuManager::instance().lastMode = MenuManager::instance().state;
 }
 
 void Application::addFireSphereAndLight(const Vector& pos) {

@@ -1,15 +1,7 @@
-﻿  Application.cpp
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.h(29,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
-  (Quelldatei „../../src/Application.cpp“ wird kompiliert)
-  
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(143,50): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(155,43): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(158,45): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(167,43): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(170,54): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(170,33): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(179,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(182,33): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(190,48): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\src\Application.cpp(222,35): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
-  CGVStudio.vcxproj -> C:\Users\User\Desktop\HAUSARBEIT\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe
+﻿  Player.cpp
+C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(62,31): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
+C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(363,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(370,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(377,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(385,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
+  CGVStudio.vcxproj -> C:\Users\sidwa\Source\Repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

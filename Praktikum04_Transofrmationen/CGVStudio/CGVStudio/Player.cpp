@@ -7,10 +7,7 @@
 #include <list>
 #include <algorithm>
 
-template <typename T>
-T clamp(T value, T minVal, T maxVal) {
-	return std::max(minVal, std::min(value, maxVal));
-}
+
 
 
 Player::Player() : fb(0, 0, 0)
@@ -34,7 +31,7 @@ bool Player::loadModels(const char* player_model, float scaleFactor)
 {
 	if (player_model != nullptr) {
 		player = new Model(player_model);
-
+		modelScale = scaleFactor;
 		player->shader(pShader);
 
 		Matrix playerRotX, playerRotY, playerMove, playerUrsprung;
@@ -69,12 +66,6 @@ float Player::toRadian(float degrees) {
 void Player::resetPosition() {
 	Matrix currentTransform = player->transform();
 
-	// 1. Translation extrahieren (letzte Spalte der Matrix)
-	Vector translation(
-		currentTransform.m[12],  // Index 3 (0-basiert: 3, 7, 11)
-		currentTransform.m[13],
-		currentTransform.m[14]
-	);
 
 	// 2. Skalierung berechnen (Länge der Basisvektoren)
 	Vector scaleX(currentTransform.m[0], currentTransform.m[1], currentTransform.m[2]);
@@ -117,8 +108,6 @@ void Player::resetPosition() {
 	Matrix fixHeight;
 	fixHeight.translation(0, 0, yOffset);  // Nur Z anpassen!
 	player->transform(fixHeight * player->transform());
-
-
 
 	updateBoundingBox();
 
@@ -277,25 +266,17 @@ void Player::update(float dtime, Camera& cam, std::list<BaseModel*>& models)
 	if (isGrounded) {
 		playerRot.rotationZ(fb.Y * dtime * 5);
 
-		Vector intendedMove(0, -fb.X * dtime * 150, 0);
+		const float BASE_SPEED = 1.5f;
+		float speed = BASE_SPEED / modelScale;   
+		Vector intendedMove(0, -fb.X * dtime * speed, 0);
 		Vector remainingMove = intendedMove;
 
-		float stepSize = 0.05f; // 5 cm Schrittweite
 
 		Matrix totalTransform = playerUrsprung;
 
-		while (remainingMove.X != 0.0f || remainingMove.Y != 0.0f || remainingMove.Z != 0.0f) {
-
-			// Schrittbewegung berechnen
-			Vector stepMove(
-				clamp(remainingMove.X, -stepSize, stepSize),
-				clamp(remainingMove.Y, -stepSize, stepSize),
-				clamp(remainingMove.Z, -stepSize, stepSize)
-			);
-
-			// Kollisionsprüfung
+	
 			Vector pushback, wallNormal;
-			bool collision = checkWallCollision(models, stepMove, pushback, &wallNormal);
+			bool collision = checkWallCollision(models, pushback, &wallNormal);
 
 			if (collision) {
 				float dot = playerDirection.normalize().dot(wallNormal.normalize());
@@ -305,26 +286,21 @@ void Player::update(float dtime, Camera& cam, std::list<BaseModel*>& models)
 				std::cout << "WallNormal:      " << wallNormal << std::endl;
 				std::cout << "Dot:             " << dot << std::endl;*/
 
-				resolveCollision(dot, wallNormal, totalTransform, stepSize, models);
+				resolveCollision(dot, wallNormal, totalTransform, models);
 
 				player->transform(totalTransform);
 				updateBoundingBox();
 				playerDirection = -player->transform().up().normalize();
 
-				break; // Nach Reaktion Bewegung abbrechen
 			}
 
 			else {
 				// Bewegung anwenden
-				totalTransform = totalTransform * Matrix().translation(stepMove.X, stepMove.Y, stepMove.Z);
+				totalTransform = totalTransform * Matrix().translation(intendedMove);
 
-				// Subtrahiere Step
-				remainingMove.X -= stepMove.X;
-				remainingMove.Y -= stepMove.Y;
-				remainingMove.Z -= stepMove.Z;
 			}
 
-		}
+		
 
 		Matrix testTransform = totalTransform * playerRot;
 
@@ -378,28 +354,28 @@ void Player::draw(const BaseCamera& Cam)
 
 }
 
-void Player::resolveCollision(float dot, const Vector& wallNormal, Matrix& totalTransform, float stepSize, const std::list<BaseModel*>& models)
+void Player::resolveCollision(float dot, const Vector& wallNormal, Matrix& totalTransform, const std::list<BaseModel*>& models)
 {
 	std::cout << "[resolveCollision] Dot: " << dot << std::endl;
 
 	// Fall 1: Frontal gegen Wand
 	if (dot < -0.9f) {
 		std::cout << "Frontal gegen Wand → versuche Wegdrehung" << std::endl;
-		trySafeRotateZTowardsWall(wallNormal, totalTransform, models, 180.0f);
+		trySafeRotate(wallNormal, totalTransform, models, 180.0f);
 	}
 
 
 	// Fall 2: Schräge Kollision → leicht wegdrehen
 	else if (dot < -0.3f) {
 		std::cout << "Schräge Kollision → leichte Drehung" << std::endl;
-		trySafeRotateZTowardsWall(wallNormal, totalTransform, models, 30.0f);
+		trySafeRotate(wallNormal, totalTransform, models, 30.0f);
 
 	}
 
 	// Fall 3: Seitlich → entlang Wand gleiten
 	else if (std::abs(dot) < 0.9f) {
 		std::cout << "Schräge Kollision → versuche adaptive Rotation" << std::endl;
-		trySafeRotateZTowardsWall(wallNormal, totalTransform, models, 15.0f);
+		trySafeRotate(wallNormal, totalTransform, models, 15.0f);
 
 	}
 
@@ -414,7 +390,7 @@ void Player::resolveCollision(float dot, const Vector& wallNormal, Matrix& total
 	}
 }
 
-void Player::trySafeRotateZTowardsWall(const Vector& wallNormal, Matrix& totalTransform, const std::list<BaseModel*>& models, float maxAngleDeg)
+void Player::trySafeRotate(const Vector& wallNormal, Matrix& totalTransform, const std::list<BaseModel*>& models, float maxAngleDeg)
 {
 	Vector currentDir = playerDirection.normalize();
 	Vector cross = currentDir.cross(wallNormal);
@@ -494,11 +470,10 @@ Vector Player::getPosition() const {
 	return Vector(transform.m[12], transform.m[13], transform.m[14]);
 }
 
-bool Player::checkWallCollision(const std::list<BaseModel*>& models, const Vector& movement, Vector& pushback, Vector* wallNormalOut)
+bool Player::checkWallCollision(const std::list<BaseModel*>& models, Vector& pushback, Vector* wallNormalOut)
 {
 	AABB futureBox = BoundingBox;
-	futureBox.Min += movement;
-	futureBox.Max += movement;
+
 
 	for (BaseModel* model : models) {
 		if (model != this && model->isWall) {
