@@ -75,9 +75,7 @@ void Application::initialize(Difficulty difficulty) {
     float startY = 0.0f;
     float startZ = 0.0f;
 
-    const Texture* fireTex = Texture::LoadShared(ASSET_DIRECTORY "fireTex2.bmp");
-    particleShader = new ParticleShader(fireTex);
-    particleShader->particleColor(Color(1.0f, 0.5f, 0.0f));
+    particleShader = new ParticleShader();
 
     for (auto* plattform : path) {
         auto* box = new TriangleBoxModel(1, 1, 1);
@@ -385,7 +383,6 @@ void Application::draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ShaderLightMapper::instance().activate();
 
-    particleShader->setTime(elapsedTime);
 
     if (MenuManager::instance().state == MenuState::MultiPlayer) {
 
@@ -452,7 +449,6 @@ void Application::end()
 
     rotatingFires.clear(); // Die Fire-Sphere-Modelle sind in Models enthalten → NICHT löschen
 
-    // ❌ NICHT MEHR NÖTIG (schon oben gelöscht)
     // delete player1;
     player1 = nullptr;
 

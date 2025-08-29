@@ -1,7 +1,3 @@
-﻿  Player.cpp
-C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(62,31): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(363,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
-C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(370,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
-C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(377,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
-C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\Player.cpp(385,16): warning C4566: Das durch den universellen Zeichennamen "\u2192" dargestellte Zeichen kann in der aktuellen Codepage (1252) nicht dargestellt werden.
-  CGVStudio.vcxproj -> C:\Users\sidwa\Source\Repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe
+﻿  ParticelSystem.cpp
+C:\Users\User\Desktop\shadow\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\ParticelSystem.cpp(51,42): warning C4305: "Argument": Verkürzung von "double" in "float"
+  CGVStudio.vcxproj -> C:\Users\User\Desktop\shadow\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

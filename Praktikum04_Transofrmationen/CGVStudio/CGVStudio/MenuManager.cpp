@@ -293,6 +293,8 @@ void MenuManager::updateMusic() {
 
         if (ma_sound_init_from_file(&engine, track, MA_SOUND_FLAG_STREAM, NULL, NULL, &currentMusic) == MA_SUCCESS) {
             ma_sound_set_looping(&currentMusic, MA_TRUE);
+            ma_sound_set_volume(&currentMusic, 0.5f);
+
             ma_sound_start(&currentMusic);
             loadedTrack = track;
             std::cout << "Musik gestartet: " << track << "\n";

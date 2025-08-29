@@ -30,6 +30,7 @@
 #include "../CGVStudio/CGVStudio/ParticelSystem.h"
 #include "../CGVStudio/CGVStudio/MenuManager.h"
 #include "../CGVStudio/CGVStudio/ShaderLightMapper.h"
+#include "../CGVStudio/CGVStudio/ParticleShader.h"
 
 
 class Application
