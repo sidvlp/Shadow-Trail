@@ -92,10 +92,6 @@ void Application::initialize(Difficulty difficulty) {
         box->calculateBoundingBox();
         Models.push_back(box);
 
-        /*
-        std::cout << (plattform->isLight ? "Licht" : "Pfad")
-            << " Plattform: (" << plattform->x << ", " << plattform->z << ")\n";
-        */
 
         if (plattform->isLight) {
             box->isPath = false;
@@ -268,18 +264,14 @@ void Application::update(float dtime)
     for (BaseModel* model : rotatingFires) {
         Matrix current = model->transform();
 
-        // Mittelpunkt extrahieren
         Vector pos(current.m[12], current.m[13], current.m[14]);
 
-        // Rückübersetzung zum Ursprung
         Matrix toOrigin, backToPos, rotY;
         toOrigin.translation(-pos);
         backToPos.translation(pos);
 
-        // Y-Rotation
-        rotY.rotationY(toRadian(45.0f * dtime)); // z. B. 45 Grad pro Sekunde
+        rotY.rotationY(toRadian(45.0f * dtime)); 
 
-        // Neue Transformation anwenden
         Matrix newTransform = backToPos * rotY * toOrigin * current;
         model->transform(newTransform);
     }
@@ -328,55 +320,9 @@ void Application::keyPressPlayer1(float &fb, float &lr) {
     if (glfwGetKey(pWindow, GLFW_KEY_LEFT) == GLFW_PRESS) {
         lr = 1;
     }
-   
 
 }
 
-Vector Application::calc3DRay( float x, float y, Vector& Pos)
-{   
-    //normalisierte Koordinaten berechnen
-    int windowWidthHalf = 0;
-    int windowHeightHalf = 0;
-    glfwGetWindowSize(pWindow, &windowWidthHalf, &windowHeightHalf);
-    windowHeightHalf /= 2;
-    windowWidthHalf /= 2;
-
-    //Feld auf -1 bis 1 normalisieren
-    float xNormal, yNormal;
-    xNormal = (x - windowWidthHalf) / windowWidthHalf;
-    yNormal = -(y - windowHeightHalf) / windowHeightHalf;
-    
-    //Richtungsvector(Kamararaum) erzeugen mit inverser Projektionsmatrix
-    Matrix projectionCam = this->Cam1.getProjectionMatrix(); 
-    Vector normalCursor(xNormal, yNormal, 0);
-    Vector direction = projectionCam.invert() * normalCursor;
-
-    //Umwandlung des Richtungsvectors in den Weltraum
-    Matrix viewMatrix = this->Cam1.getViewMatrix();
-    Vector directionInWeltraum = viewMatrix.invert().transformVec3x3(direction);
-
-    //Schnittpunkt mit der Ebene y=0 bestimmen
-    Vector camPos = this->Cam1.position();
-    directionInWeltraum.normalize();
-    float s;
-    camPos.triangleIntersection(directionInWeltraum, Vector(0, 0, 1), Vector(0, 0, 0), Vector(1, 0, 0), s);
-
-    //falls directionWolrld von der Ebene weg zeigt (0,0,0) zurückgeben
-    if (s < 0) {
-        return Vector(0, 0, 0);
-    }
-
-    //Vektor zum Punkt auf der Ebene y=0 berechnen
-    Vector positionOnGround = camPos + directionInWeltraum * s;
-
-    //float Ungenauigkeiten umgehen indem der Vektor erneut auf y = 0 gesetzt wird
-    return Vector(positionOnGround.X, 0, positionOnGround.Z);
-
- 
-    // Pos:Ray Origin
-    // return:Ray Direction
-    
-}
 
 void Application::draw()
 {
@@ -447,14 +393,11 @@ void Application::end()
         delete ps;
     fireSystems.clear();
 
-    rotatingFires.clear(); // Die Fire-Sphere-Modelle sind in Models enthalten → NICHT löschen
+    rotatingFires.clear(); 
 
-    // delete player1;
     player1 = nullptr;
 
     if (player2) {
-        // ❌ NICHT MEHR NÖTIG (schon oben gelöscht)
-        // delete player2;
         player2 = nullptr;
     }
 

@@ -31,7 +31,6 @@ class PhongShader : public BaseShader
 {
 public:
     PhongShader();
-    // setter
     void diffuseColor(const Color& c);
     void ambientColor(const Color& c);
     void specularColor(const Color& c);
@@ -40,7 +39,7 @@ public:
     void lightPos(const Vector& pos);
     void lightColor(const Color& c);
     void setDarkPath(bool dark);
-    //getter
+
     const Color& diffuseColor() const { return DiffuseColor; }
     const Color& ambientColor() const { return AmbientColor; }
     const Color& specularColor() const { return SpecularColor; }

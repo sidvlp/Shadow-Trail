@@ -54,7 +54,6 @@ public:
 
     void Application::addWall(float width, float height, const Vector& position, const Vector& rotationAxis, float angleDegrees, const Vector& surfaceNormal);
 protected:
-    Vector calc3DRay( float x, float y, Vector& Pos);
     Camera Cam1, Cam2;
     ModelList Models;
     int windowWidth;

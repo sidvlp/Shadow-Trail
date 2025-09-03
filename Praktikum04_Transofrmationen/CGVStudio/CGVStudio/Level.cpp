@@ -15,17 +15,12 @@ Level::Level(int w, int h) : width(w), height(h) {
 void Level::generatePathWithLights() {
     generatePath(); 
     addLightPlatforms();
-    addWalls();
 }
 
 const std::vector<Plattform*>& Level::getPath() const {
     return path;
 }
 
-void Level::addWalls() {
-    //linke Wand
-   
-}
 
 void Level::generatePath() {
     path.clear();
@@ -104,7 +99,7 @@ bool Level::hasGoodNeighborhood(Plattform* p) {
 void Level::addLightPlatforms() {
     std::vector<Plattform*> lightPlatforms;
 
-    size_t i = 4;// Erst ab dem 5. Pfadblock starten
+    size_t i = 4;
     while (i < path.size()) {
         Plattform* current = path[i];
 
@@ -144,23 +139,14 @@ void Level::addLightPlatforms() {
                 platform->isLight = true;
                 lightPlatforms.push_back(platform);
                 path.push_back(platform);
-                //std::cout << "Licht hinzugefügttt bei (" << platform->x << ", " << platform->z << ")\n";
-
-                // Hier ein paar Pfadblöcke überspringen, z.B. 4
                 i += 4;
                 continue;
             }
         }
 
-        i++; // Normal weiter
+        i++;
     }
 
-    /*
-    std::cout << "\n=== Lichtplattformen ===\n";
-    for (Plattform* p : lightPlatforms) {
-        std::cout << "Licht bei (" << p->x << ", " << p->z << ")\n";
-    }
-    */
 }
 
 

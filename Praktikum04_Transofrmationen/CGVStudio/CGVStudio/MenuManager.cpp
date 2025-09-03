@@ -135,7 +135,7 @@ void MenuManager::drawLoading() {
         ImGuiWindowFlags_NoCollapse |
         ImGuiWindowFlags_NoTitleBar);
 
-    ImGui::SetCursorPosY(60); // vertikal zentrieren
+    ImGui::SetCursorPosY(60); 
     const char* loadingText = "Ihr Level wird geladen...\nBitte einen Moment Geduld.";
     ImVec2 textSize = ImGui::CalcTextSize(loadingText);
     ImGui::SetCursorPosX((winSize.x - textSize.x) * 0.5f);
@@ -151,7 +151,7 @@ void MenuManager::drawPauseButton() {
         return;
     }
 
-    ImVec2 buttonSize(70, 25); // Etwas breiter für Schrift
+    ImVec2 buttonSize(70, 25); 
     ImVec2 pos(ImGui::GetIO().DisplaySize.x - buttonSize.x - 10, 10);
 
     ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
@@ -210,8 +210,6 @@ void MenuManager::drawPauseMenu() {
 }
 
 
-
-
 void MenuManager::centerWindowStart(const char* title) {
     ImGuiViewport* viewport = ImGui::GetMainViewport();
 
@@ -228,12 +226,10 @@ void MenuManager::centerWindowStart(const char* title) {
         ImGuiWindowFlags_NoBringToFrontOnFocus |
         ImGuiWindowFlags_NoBackground);
 
-    // Nur Buttons zentrieren
     ImGui::SetCursorPosY(viewport->Size.y / 2.0f - 50);
     ImGui::SetCursorPosX((viewport->Size.x - 200.0f) * 0.5f);
     ImGui::BeginGroup();
 
-    // Schrift separat (ohne Einfluss auf Layout)
     DrawWaveText(title);
 }
 
@@ -243,16 +239,14 @@ void MenuManager::DrawWaveText(const char* text) {
     float time = ImGui::GetTime();
     ImGuiViewport* viewport = ImGui::GetMainViewport();
 
-    // Font aktivieren
     if (ImGui::GetIO().Fonts->Fonts.Size > 1)
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
 
-    // Position berechnen (zentriert oben)
     ImVec2 textSize = ImGui::CalcTextSize(text);
     float startX = viewport->Pos.x + (viewport->Size.x - textSize.x) * 0.5f;
     float baseY = viewport->Pos.y + viewport->Size.y / 2.0f - 120;
 
-    ImDrawList* drawList = ImGui::GetBackgroundDrawList(); // unabhängig vom Layout
+    ImDrawList* drawList = ImGui::GetBackgroundDrawList();
 
     float x = startX;
     for (int i = 0; text[i] != '\0'; ++i) {
@@ -297,10 +291,6 @@ void MenuManager::updateMusic() {
 
             ma_sound_start(&currentMusic);
             loadedTrack = track;
-            std::cout << "Musik gestartet: " << track << "\n";
-        }
-        else {
-            std::cerr << "Musik konnte nicht geladen werden: " << track << "\n";
         }
     }
 }

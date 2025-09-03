@@ -9,8 +9,8 @@
 #include <glfw/glfw3.h>
 #endif
 
-#include <iostream>  // für std::cerr und std::cout
-#include <stdio.h>   // für printf
+#include <iostream>  
+#include <stdio.h>   
 #include "Application.h"
 #include "freeimage.h"
 #include "../CGVStudio/CGVStudio/MenuManager.h"
@@ -30,9 +30,6 @@ void PrintOpenGLVersion();
 int main () {
     FreeImage_Initialise();
 
-
-
-    // start GL context and O/S window using the GLFW helper library
     if (!glfwInit ()) {
         fprintf (stderr, "ERROR: could not start GLFW3\n");
         return 1;
@@ -69,19 +66,14 @@ int main () {
     ImGui::CreateContext();
     const char* fontPath = "fonts/Bold.ttf";
 
-    // Prüfen, ob die Datei existiert:
     std::ifstream fontFile(fontPath);
-    if (!fontFile) {
-        std::cerr << "[DEBUG] Font-Datei nicht gefunden: " << fontPath << "\n";
-    }
-    else {
-        std::cout << "[DEBUG] Font-Datei erfolgreich gefunden: " << fontPath << "\n";
+    if (fontFile) {
         ImGuiIO& io = ImGui::GetIO();
-        io.Fonts->AddFontDefault(); // Standardfont (Index 0)
+        io.Fonts->AddFontDefault(); 
 
         io.Fonts->AddFontFromFileTTF(fontPath, 32.0f);
     }
-    ImGui::StyleColorsDark(); // oder Light/Classic
+    ImGui::StyleColorsDark(); 
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
@@ -94,7 +86,6 @@ int main () {
         MenuManager& menu = MenuManager::instance();
         Application App(window);
 
-        // Sofort starten (default Easy)
         App.initialize(Difficulty::Easy);
         App.start();
         menu.audioReadyForGame = true;
@@ -116,7 +107,6 @@ int main () {
 
             static MenuState lastLoggedState = MenuState::Start;
             if (menu.state != lastLoggedState) {
-                std::cout << "[DEBUG] MenuState geändert zu: ";
                 switch (menu.state) {
                 case MenuState::Start:       std::cout << "Start\n"; break;
                 case MenuState::SinglePlayer:     std::cout << "Playing\n"; break;
@@ -124,7 +114,6 @@ int main () {
                 case MenuState::GameWon:     std::cout << "GameWon\n"; break;
                 case MenuState::Loading:     std::cout << "Loading\n"; break;
                 case MenuState::LoadingStarted: std::cout << "LoadingStarted\n"; break;
-                default: std::cout << "Unbekannt\n"; break;
                 }
                 lastLoggedState = menu.state;
             }
@@ -169,9 +158,6 @@ int main () {
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
         }
-
-
-
         
 
         App.end();

@@ -103,7 +103,6 @@
     <ClCompile Include="..\..\src\PhongShader.cpp" />
     <ClCompile Include="..\..\src\rgbimage.cpp" />
     <ClCompile Include="..\..\src\Scene.cpp" />
-    <ClCompile Include="..\..\src\Tank.cpp" />
     <ClCompile Include="..\..\src\Texture.cpp" />
     <ClCompile Include="..\..\src\TriangleBoxModel.cpp" />
     <ClCompile Include="..\..\src\TrianglePlaneModel.cpp" />
@@ -141,7 +140,6 @@
     <ClInclude Include="..\..\src\PhongShader.h" />
     <ClInclude Include="..\..\src\rgbimage.h" />
     <ClInclude Include="..\..\src\Scene.h" />
-    <ClInclude Include="..\..\src\Tank.h" />
     <ClInclude Include="..\..\src\Texture.h" />
     <ClInclude Include="..\..\src\TriangleBoxModel.h" />
     <ClInclude Include="..\..\src\TrianglePlaneModel.h" />

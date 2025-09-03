@@ -1,6 +1,5 @@
 #include "ParticleShader.h"
 
-// Minimaler Vertex-Shader: nimmt die Vertex-Position und multipliziert sie mit der MVP-Matrix
 const char* VertexShader = R"(
 #version 400
 layout(location = 0) in vec3 VertexPos;
@@ -11,7 +10,6 @@ void main() {
 }
 )";
 
-// Minimaler Fragment-Shader: malt orangene Punkte
 const char* FragmentShader = R"(
 #version 400
 out vec4 FragColor;
