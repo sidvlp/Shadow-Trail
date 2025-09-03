@@ -7,11 +7,11 @@ layout(location = 0) in vec3 VertexPos;
 uniform mat4 MVP;
 void main() {
     gl_Position = MVP * vec4(VertexPos, 1.0);
-    gl_PointSize = 5.0; // default Punktgröße
+    gl_PointSize = 5.0; // Punktgröße
 }
 )";
 
-// Minimaler Fragment-Shader: malt weiße Punkte
+// Minimaler Fragment-Shader: malt orangene Punkte
 const char* FragmentShader = R"(
 #version 400
 out vec4 FragColor;

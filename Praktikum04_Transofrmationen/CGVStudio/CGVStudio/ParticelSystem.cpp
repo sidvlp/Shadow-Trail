@@ -42,8 +42,7 @@ void ParticleSystem::RespawnParticle(Particle& p) {
 void ParticleSystem::RespawnDefaultParticle(Particle& p) {
     p.Position = m_EmitterPosition + Vector(RandomFloat(-0.1f, 0.1f), 0.0f, RandomFloat(-0.1f, 0.1f));
     p.Velocity = Vector(RandomFloat(-0.1f, 0.1f), RandomFloat(0.2f, 0.5f), RandomFloat(-0.1f, 0.1f));
-    p.MaxLifeTime = RandomFloat(1.0f, 2.5f);
-    p.LifeTime = p.MaxLifeTime;
+    p.LifeTime = RandomFloat(1.0f, 2.5f);
 }
 
 void ParticleSystem::RespawnRingParticle(Particle& p) {
@@ -59,8 +58,7 @@ void ParticleSystem::RespawnRingParticle(Particle& p) {
     float upward = RandomFloat(0.01f, 0.05f);
 
     p.Velocity = outward + Vector(0.0f, upward, 0.0f);
-    p.MaxLifeTime = RandomFloat(1.2f, 1.8f);
-    p.LifeTime = p.MaxLifeTime;
+    p.LifeTime = RandomFloat(1.2f, 1.8f);
 }
 
 void ParticleSystem::Render(const Matrix& viewProjMatrix) {

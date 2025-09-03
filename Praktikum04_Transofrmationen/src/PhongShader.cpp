@@ -102,13 +102,13 @@ vec3 calcBasicLighting(vec3 N, vec3 E, vec4 texColor, vec3 DiffuseColor, vec3 Sp
 }
 
 
-
-float computeRingRadius(float time, out bool fullBright, out bool pulsing) {
+// Berechnet den aktuellen Ringradius abhängig von der Zeit
+float updateRingRadius(float time, out bool fullBright, out bool pulsing) {
     float growPhase = 2.0;
     float brightPhase = 0.5;
     float shrinkPhase = 2.0;
-    float darkPulsePhase = 4.0;
-    float cycleLength = growPhase + brightPhase + shrinkPhase + darkPulsePhase;
+    float darkPhase = 6.0;
+    float cycleLength = growPhase + brightPhase + shrinkPhase + darkPhase;
 
     float tCycle = mod(time, cycleLength);
 
@@ -120,7 +120,7 @@ float computeRingRadius(float time, out bool fullBright, out bool pulsing) {
 
     if(tCycle < growPhase) {
         float t = tCycle / growPhase;
-        return mix(pulsingRadius, 10.0, t);
+        return mix(pulsingRadius, 8.0, t);
     } else if(tCycle < growPhase + brightPhase) {
         fullBright = true;
         return 10.0;
@@ -133,6 +133,7 @@ float computeRingRadius(float time, out bool fullBright, out bool pulsing) {
     }
 }
 
+// Berechnet das normale Phong-Licht einer einzelnen Lichtquelle
 vec3 applyLight(ShaderLight light, vec3 N, vec3 E, vec4 texColor, float SpecularExp, float dist) {
     vec3 L = light.Position - Position;
     L = normalize(L);
@@ -148,11 +149,13 @@ vec3 applyLight(ShaderLight light, vec3 N, vec3 E, vec4 texColor, float Specular
     return (diffuse + specular) * texColor.rgb;
 }
 
-bool isInsideRing(float dist, float ringRadius, float ringThickness) {
+// Prüft, ob ein Fragment genau in der Ringkontur liegt
+bool insideGlowRing(float dist, float ringRadius, float ringThickness) {
     float ringStart = ringRadius - ringThickness;
     return dist >= ringStart && dist <= ringRadius;
 }
 
+// Ringeffekt wird unterdrückt, wenn andere Lichtquelle zu nah dran ist -> kein Überlappen von Ringen
 bool isBlocked(int currentLightIndex, float ringRadius) {
     for(int j=0; j<LightCount; j++) {
         if(j == currentLightIndex || lights[j].Type != 0) continue;
@@ -164,12 +167,13 @@ bool isBlocked(int currentLightIndex, float ringRadius) {
     return false;
 }
 
+// Berechnet das komplette animierte Licht für den DarkPath-Effekt
 vec3 calcAnimatedLighting(vec3 N, vec3 E, vec4 texColor, vec3 DiffuseColor, vec3 SpecularColor, float SpecularExp, float time, out bool insideAnyLightRadius) {
     vec3 result = AmbientColor * texColor.rgb;
     insideAnyLightRadius = false;
 
     bool fullBright, pulsing;
-    float ringRadius = computeRingRadius(time, fullBright, pulsing);
+    float ringRadius = updateRingRadius(time, fullBright, pulsing);
     float ringThickness = 0.05;
 
     for(int i=0; i<LightCount; i++) {
@@ -182,7 +186,7 @@ vec3 calcAnimatedLighting(vec3 N, vec3 E, vec4 texColor, vec3 DiffuseColor, vec3
             insideAnyLightRadius = true;
 
         if(!isBlocked(i, ringRadius) && 
-           isInsideRing(dist, ringRadius, ringThickness) && 
+           insideGlowRing(dist, ringRadius, ringThickness) && 
            (pulsing || !fullBright)) 
         {
             result += vec3(1.0, 0.3, 0.0);

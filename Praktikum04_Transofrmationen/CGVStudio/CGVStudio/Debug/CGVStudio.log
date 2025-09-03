@@ -1,3 +1,3 @@
-﻿  ParticelSystem.cpp
-C:\Users\User\Desktop\shadow\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\ParticelSystem.cpp(51,42): warning C4305: "Argument": Verkürzung von "double" in "float"
-  CGVStudio.vcxproj -> C:\Users\User\Desktop\shadow\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe
+﻿  PhongShader.cpp
+C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\PhongShader.cpp(287,37): warning C4244: "Argument": Konvertierung von "double" in "GLfloat", möglicher Datenverlust
+  CGVStudio.vcxproj -> C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

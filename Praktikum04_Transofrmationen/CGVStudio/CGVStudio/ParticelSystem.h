@@ -12,7 +12,6 @@ struct Particle {
     Vector Position;
     Vector Velocity;
     float LifeTime;
-    float MaxLifeTime;
 };
 
 class ParticleSystem {
