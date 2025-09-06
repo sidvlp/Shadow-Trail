@@ -7,6 +7,7 @@ enum class MenuState {
     Start,
     SinglePlayer,
     GameWon,
+    GameOver,
     MultiPlayer,
     Loading,
     LoadingStarted,
@@ -44,6 +45,7 @@ public:
 private:
     void drawStart();
     void drawGameOver();
+    void drawGameWon();
     void drawLoading();
     void drawPauseButton();
     void drawPauseMenu();

@@ -137,7 +137,9 @@ int main () {
                     menu.state = MenuState::MultiPlayer;
                 }
                 else {
+                   
                     menu.state = MenuState::SinglePlayer;
+
                 }
                 App.reinitialize(menu.difficulty);
                 menu.loadingTriggered = false;
@@ -153,6 +155,29 @@ int main () {
 
             menu.Draw();
             App.draw();
+
+            if (menu.state == MenuState::SinglePlayer) {
+                Player* player = App.getPlayer();
+                if (player) {
+                    int lives = player->getLives();
+
+                    ImVec2 windowPos = ImVec2(10, 15);
+                    ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
+                    ImGui::SetNextWindowBgAlpha(0.3f);
+
+                    ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize |
+                        ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
+                        ImGuiWindowFlags_NoNav;
+
+                    if (ImGui::Begin("LivesWindow", nullptr, flags)) {
+                        ImGui::Text("Leben: %d", lives);
+                 
+                    }
+                    ImGui::End();
+                }
+            }
+
+            
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -18,7 +18,7 @@ void MenuManager::Draw() {
         drawStart();
         break;
     case MenuState::GameWon:
-        drawGameOver();
+        drawGameWon();
         break;
     case MenuState::Loading:
         drawLoading();
@@ -28,6 +28,9 @@ void MenuManager::Draw() {
         break;
     case MenuState::MultiPlayer:
         drawPauseButton();
+        break;
+    case MenuState::GameOver:
+        drawGameOver();
         break;
     default:
         break;
@@ -45,6 +48,36 @@ void MenuManager::drawBackgroundOverlay(ImU32 color) {
     );
 }
 
+void MenuManager::drawGameOver() {
+    centerWindowStart("Game Over!");
+
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.9f, 0.9f, 0.9f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+    if (ImGui::Button("Neustarten", ImVec2(200, 40))) {
+        state = (lastMode == MenuState::MultiPlayer) ? MenuState::MultiPlayer : MenuState::SinglePlayer;
+        resetRequested = true;
+    }
+
+    ImGui::Dummy(ImVec2(0, 10));
+
+    if (ImGui::Button("Zurueck zum Menue", ImVec2(200, 40))) {
+        state = MenuState::Start;
+
+    }
+
+    ImGui::Dummy(ImVec2(0, 10));
+
+    if (ImGui::Button("Beenden", ImVec2(200, 40))) {
+        exit(0);
+    }
+
+    ImGui::PopStyleColor(4);
+    ImGui::EndGroup();
+    ImGui::End();
+}
 
 
 
@@ -87,7 +120,7 @@ void MenuManager::drawStart() {
     ImGui::End();
 }
 
-void MenuManager::drawGameOver() {
+void MenuManager::drawGameWon() {
     centerWindowStart("Glueckwunsch!");
 
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));

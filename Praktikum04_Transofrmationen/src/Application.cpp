@@ -50,18 +50,16 @@ void Application::initialize(Difficulty difficulty) {
     float zOffSet = (difficulty == Difficulty::Hard) ? 5.0f : 0.0f;
 
 
-    // Spieler 1
     player1 = new Player();
     player1->shader(new PhongShader(), false);
-    player1->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
+    player1->setStartPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
     player1->loadModels(ASSET_DIRECTORY "12248_Bird_v1_L2.obj", 0.01f);
     Models.push_back(player1);
 
-    // Spieler 2 (optional)
     if (gameManager.state == MenuState::MultiPlayer) {
         player2 = new Player();
         player2->shader(new PhongShader(), false);
-        player2->setPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
+        player2->setStartPosition(Vector(width / 2.0f, 0.5f, height + 2.5f));
         player2->loadModels(ASSET_DIRECTORY "13463_Australian_Cattle_Dog_v3.obj", 0.02f);
         Models.push_back(player2);
     }
@@ -188,6 +186,7 @@ void Application::initialize(Difficulty difficulty) {
     endPlatform->calculateBoundingBox();
     Models.push_back(endPlatform);
 
+    //Ziel auf der Endplattform
     endPosition = Vector(width / 2.0f - offset, 0.5f, -2.5f);
     fireSystems.push_back(new ParticleSystem(200, endPosition, ParticleSpawnMode::Ring));
 }

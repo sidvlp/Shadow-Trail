@@ -1,23 +1,3 @@
-﻿  Application.cpp
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.h(29,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
-  (Quelldatei „../../src/Application.cpp“ wird kompiliert)
-  
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(137,50): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(149,43): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(152,45): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(161,43): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(164,54): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(164,33): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(173,37): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(176,33): warning C4244: "Argument": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(184,48): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.cpp(212,35): warning C4244: "return": Konvertierung von "double" in "float", möglicher Datenverlust
-  main.cpp
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\Application.h(29,10): warning C4067: Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
-  (Quelldatei „../../src/main.cpp“ wird kompiliert)
-  
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\main.cpp(100,32): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
-C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\src\main.cpp(83,11): warning C4101: "lastDtime": Unreferenzierte lokale Variable
-  Code wird generiert...
-LINK : warning LNK4098: Standardbibliothek "MSVCRT" steht in Konflikt mit anderen Bibliotheken; /NODEFAULTLIB:Bibliothek verwenden.
-  CGVStudio.vcxproj -> C:\Users\User\Desktop\CG\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe
+﻿  MenuManager.cpp
+C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\CGVStudio\MenuManager.cpp(272,16): warning C4244: "Initialisierung": Konvertierung von "double" in "float", möglicher Datenverlust
+  CGVStudio.vcxproj -> C:\Users\sidwa\source\repos\Shadow-Trail\Praktikum04_Transofrmationen\CGVStudio\Debug\Praktikum04_Transofrmationen.exe

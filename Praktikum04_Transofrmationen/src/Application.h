@@ -51,8 +51,7 @@ public:
     bool gameEnded = false;
     void restartGame();
     void reinitialize(Difficulty difficulty);
-
-    void Application::addWall(float width, float height, const Vector& position, const Vector& rotationAxis, float angleDegrees, const Vector& surfaceNormal);
+    Player* getPlayer() { return player1; }
 protected:
     Camera Cam1, Cam2;
     ModelList Models;

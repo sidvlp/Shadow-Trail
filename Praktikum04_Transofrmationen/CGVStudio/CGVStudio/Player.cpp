@@ -6,25 +6,32 @@
 #include "../CGVStudio/LineModel.h"
 #include <list>
 #include <algorithm>
-
-
+#include "MenuManager.h"
 
 
 Player::Player() : fb(0, 0, 0)
 {
-	pBoundingBoxModel = new LineBoxModel(1, 1, 1);
-	playerFootBoundingBox = new LineBoxModel(1, 1, 1);
+	debugPlayerBoundingBox = new LineBoxModel(1, 1, 1);
+	debugPlayerFootBoundingBox = new LineBoxModel(1, 1, 1);
 	isFalling = false;
 	isGrounded = true;
 	BoundingBox.Min = Vector(-0.5f, -0.5f, -0.5f);
 	BoundingBox.Max = Vector(0.5f, 0.5f, 0.5f);
+	constantBoundingBoxShader = new ConstantShader();
+	constantBoundingBoxShader->color(Color(1, 1, 1));
+	debugPlayerBoundingBox->shader(constantBoundingBoxShader, false);
+	constantFootBoundingBoxShader = new ConstantShader();
+	constantFootBoundingBoxShader->color(Color(0, 1, 0));
+	debugPlayerFootBoundingBox->shader(constantFootBoundingBoxShader, false);
 
 }
 
 Player::~Player()
 {
-	delete pBoundingBoxModel;
-	delete playerFootBoundingBox;
+	delete debugPlayerBoundingBox;
+	delete debugPlayerFootBoundingBox;
+	delete constantBoundingBoxShader;
+	delete constantFootBoundingBoxShader;
 }
 
 bool Player::loadModels(const char* player_model, float scaleFactor)
@@ -41,16 +48,7 @@ bool Player::loadModels(const char* player_model, float scaleFactor)
 		playerMove.translation(startPosition);
 		playerUrsprung.scale(scaleFactor);
 		player->transform(playerMove * playerUrsprung * playerRotY * playerRotX);
-
-		updateBoundingBox();
-		float modelBottom = BoundingBox.Min.Y;
-		float desiredGroundHeight = 0.0f;
-		float yOffset = desiredGroundHeight - modelBottom;
-
-		Matrix fixHeight;
-		fixHeight.translation(0, 0, yOffset);
-		player->transform(fixHeight * player->transform());
-
+		startTransform = player->transform();
 		updateBoundingBox();
 		return true;
 	}
@@ -64,71 +62,34 @@ float Player::toRadian(float degrees) {
 }
 
 void Player::resetPosition() {
-	Matrix currentTransform = player->transform();
 
-
-	// 2. Skalierung berechnen (Länge der Basisvektoren)
-	Vector scaleX(currentTransform.m[0], currentTransform.m[1], currentTransform.m[2]);
-	Vector scaleY(currentTransform.m[4], currentTransform.m[5], currentTransform.m[6]);
-	Vector scaleZ(currentTransform.m[8], currentTransform.m[9], currentTransform.m[10]);
-	Vector scale(scaleX.length(), scaleY.length(), scaleZ.length());
-
-	// 3. Rotation extrahieren (Skalierung entfernen)
-	Matrix rotationMatrix = currentTransform;
-
-	// Skalierung rückgängig machen
-	if (scale.X != 0) {
-		rotationMatrix.m[0] /= scale.X; rotationMatrix.m[1] /= scale.X; rotationMatrix.m[2] /= scale.X;
-	}
-	if (scale.Y != 0) {
-		rotationMatrix.m[4] /= scale.Y; rotationMatrix.m[5] /= scale.Y; rotationMatrix.m[6] /= scale.Y;
-	}
-	if (scale.Z != 0) {
-		rotationMatrix.m[8] /= scale.Z; rotationMatrix.m[9] /= scale.Z; rotationMatrix.m[10] /= scale.Z;
-	}
-
-	// 4. Neue Transformationsmatrix erstellen (nur Translation zurücksetzen)
-	Matrix newTransform;
-	newTransform.translation(startPosition);  // Reset-Position
-
-
-	// Rotation wieder anwenden
-	for (int i = 0; i < 3; ++i) {
-		newTransform.m[i * 4] = rotationMatrix.m[i * 4] * scale.X;
-		newTransform.m[i * 4 + 1] = rotationMatrix.m[i * 4 + 1] * scale.Y;
-		newTransform.m[i * 4 + 2] = rotationMatrix.m[i * 4 + 2] * scale.Z;
-	}
-
-	player->transform(newTransform);
-	updateBoundingBox();
-	float modelBottom = BoundingBox.Min.Y;
-	float desiredGroundHeight = 0.0f;
-	float yOffset = desiredGroundHeight - modelBottom;
-
-	Matrix fixHeight;
-	fixHeight.translation(0, 0, yOffset);  // Nur Z anpassen!
-	player->transform(fixHeight * player->transform());
-
+	player->transform(startTransform);
 	updateBoundingBox();
 
 }
 
+/**
+* Debug-Methode zum zeichnen der PlayerBoundingBox und der FootBoundingBox
+*/
 void Player::drawBoundingBox(const BaseCamera& Cam) {
-	if (!pBoundingBoxModel || !playerFootBoundingBox) return;
+	if (!debugPlayerBoundingBox || !debugPlayerFootBoundingBox) return;
 
-	// Haupt-Bounding Box
-	ConstantShader* pConstShader = new ConstantShader();
-	pConstShader->color(Color(1, 1, 1)); // Weiß
-	pBoundingBoxModel->shader(pConstShader, true);
-	pBoundingBoxModel->draw(Cam);
 
-	// Fuß-Bounding Box
-	ConstantShader* pFootShader = new ConstantShader();
-	pFootShader->color(Color(0, 1, 0)); // Grün
-	playerFootBoundingBox->shader(pFootShader, true);
-	playerFootBoundingBox->draw(Cam);
+	debugPlayerBoundingBox->draw(Cam);
+
+
+	debugPlayerFootBoundingBox->draw(Cam);
 }
 
+/**
+ *
+ * Diese Methode berechnet die transformierte Bounding Box des Spielermodells,
+ * indem alle acht Eckpunkte der lokalen Bounding Box mit der aktuellen
+ * Transformationsmatrix multipliziert werden. Anschließend werden die
+ * minimalen und maximalen Koordinaten ermittelt, um die neue globale
+ * Bounding Box festzulegen.
+ * 
+ */
 void Player::updateBoundingBox()
 {
 	AABB localBox = player->boundingBox();
@@ -165,16 +126,14 @@ void Player::updateBoundingBox()
 	updateFootBoundingBox(localBox, transform);
 
 
-	Vector bSize = localBox.Max - localBox.Min;
-	Vector bCenter = (localBox.Min + localBox.Max) * 0.5f;
+	Vector bSize = BoundingBox.Max - BoundingBox.Min;
+	Vector bCenter = (BoundingBox.Min + BoundingBox.Max) * 0.5f;
 
 	Matrix scaleMat, transMat;
 	scaleMat.scale(bSize.X, bSize.Y, bSize.Z);
 	transMat.translation(bCenter.X, bCenter.Y, bCenter.Z);
 
-	Matrix modelMatrix = player->transform();
-	pBoundingBoxModel->transform(modelMatrix * transMat * scaleMat);
-
+	debugPlayerBoundingBox->transform(transMat * scaleMat);
 
 	BoundingBox.Min = Vector(newMin.X, newMin.Y, newMin.Z);
 	BoundingBox.Max = Vector(newMax.X, newMax.Y, newMax.Z);
@@ -185,7 +144,7 @@ void Player::updateBoundingBox()
 
 void Player::updateFootBoundingBox(const AABB& localBox, const Matrix& transform) {
 	const float footHeightRatio = 0.2f;
-	const float footWidthRatio = 0.4f;  // 40 % der Breite/Tiefe
+	const float footWidthRatio = 0.4f;  
 
 	float totalWidth = localBox.Max.X - localBox.Min.X;
 	float totalDepth = localBox.Max.Y - localBox.Min.Y;
@@ -198,15 +157,10 @@ void Player::updateFootBoundingBox(const AABB& localBox, const Matrix& transform
 	Vector center = (localBox.Min + localBox.Max) * 0.5f;
 
 	AABB localFootBox;
-	localFootBox.Min = Vector(center.X - footWidth / 2.0f,
-		center.Y - footDepth / 2.0f,
-		localBox.Min.Z);
-	localFootBox.Max = Vector(center.X + footWidth / 2.0f,
-		center.Y + footDepth / 2.0f,
-		localBox.Min.Z + footHeight);
+	localFootBox.Min = Vector(center.X - footWidth / 2.0f,	center.Y - footDepth / 2.0f, localBox.Min.Z);
+	localFootBox.Max = Vector(center.X + footWidth / 2.0f, center.Y + footDepth / 2.0f, localBox.Min.Z + footHeight);
 
-	// Transformiere alle Ecken
-	Vector footCorners[8] = {
+	Vector footBoxCorners[8] = {
 		Vector(localFootBox.Min.X, localFootBox.Min.Y, localFootBox.Min.Z),
 		Vector(localFootBox.Min.X, localFootBox.Min.Y, localFootBox.Max.Z),
 		Vector(localFootBox.Min.X, localFootBox.Max.Y, localFootBox.Min.Z),
@@ -217,37 +171,34 @@ void Player::updateFootBoundingBox(const AABB& localBox, const Matrix& transform
 		Vector(localFootBox.Max.X, localFootBox.Max.Y, localFootBox.Max.Z)
 	};
 
-	for (int i = 0; i < 8; ++i)
-		footCorners[i] = transform * footCorners[i];
-
-	footBoundingBox.Min = footBoundingBox.Max = footCorners[0];
-	for (int i = 1; i < 8; ++i) {
-		footBoundingBox.Min.X = std::min(footBoundingBox.Min.X, footCorners[i].X);
-		footBoundingBox.Min.Y = std::min(footBoundingBox.Min.Y, footCorners[i].Y);
-		footBoundingBox.Min.Z = std::min(footBoundingBox.Min.Z, footCorners[i].Z);
-
-		footBoundingBox.Max.X = std::max(footBoundingBox.Max.X, footCorners[i].X);
-		footBoundingBox.Max.Y = std::max(footBoundingBox.Max.Y, footCorners[i].Y);
-		footBoundingBox.Max.Z = std::max(footBoundingBox.Max.Z, footCorners[i].Z);
+	for (int i = 0; i < 8; ++i) {
+		footBoxCorners[i] = transform * footBoxCorners[i];
 	}
 
-	// Update Visualisierung
-	Vector footSize = localFootBox.Max - localFootBox.Min;
-	Vector footCenter = (localFootBox.Min + localFootBox.Max) * 0.5f;
+	footBoundingBox.Min = footBoundingBox.Max = footBoxCorners[0];
+	for (int i = 1; i < 8; ++i) {
+		footBoundingBox.Min.X = std::min(footBoundingBox.Min.X, footBoxCorners[i].X);
+		footBoundingBox.Min.Y = std::min(footBoundingBox.Min.Y, footBoxCorners[i].Y);
+		footBoundingBox.Min.Z = std::min(footBoundingBox.Min.Z, footBoxCorners[i].Z);
+
+		footBoundingBox.Max.X = std::max(footBoundingBox.Max.X, footBoxCorners[i].X);
+		footBoundingBox.Max.Y = std::max(footBoundingBox.Max.Y, footBoxCorners[i].Y);
+		footBoundingBox.Max.Z = std::max(footBoundingBox.Max.Z, footBoxCorners[i].Z);
+	}
+
+	Vector footSize = footBoundingBox.Max - footBoundingBox.Min;
+	Vector footCenter = (footBoundingBox.Min + footBoundingBox.Max) * 0.5f;
 
 	Matrix footScaleMat, footTransMat;
 	footScaleMat.scale(footSize.X, footSize.Y, footSize.Z);
 	footTransMat.translation(footCenter.X, footCenter.Y, footCenter.Z);
 
-	playerFootBoundingBox->transform(transform * footTransMat * footScaleMat);
+	debugPlayerFootBoundingBox->transform(footTransMat * footScaleMat);
 }
 
-AABB& Player::getBoundingBox()
-{
-	return BoundingBox;
-}
 
-void Player::setPosition(const Vector& pos) {
+
+void Player::setStartPosition(const Vector& pos) {
 	startPosition = pos;
 }
 
@@ -260,23 +211,21 @@ void Player::steer(float ForwardBackward, float LeftRight)
 
 void Player::update(float dtime, Camera& cam, std::list<BaseModel*>& models)
 {
-	Matrix playerMove, playerRot, playerUrsprung;
-	playerUrsprung = this->player->transform();
+	Matrix playerMove, playerRot, currentTransform;
+	currentTransform = this->player->transform();
 
 	if (isGrounded) {
-		playerRot.rotationZ(fb.Y * dtime * 5);
+		playerRot.rotationZ(fb.Y * dtime * 5); //Y und Z vertauscht
 
 		const float BASE_SPEED = 1.5f;
 		float speed = BASE_SPEED / modelScale;   
-		Vector intendedMove(0, -fb.X * dtime * speed, 0);
-		Vector remainingMove = intendedMove;
+		Vector intendedMove(0, -fb.X * dtime * speed, 0); //Y und Z vertauscht
+
+		Matrix totalTransform = currentTransform;
 
 
-		Matrix totalTransform = playerUrsprung;
-
-	
-			Vector pushback, wallNormal;
-			bool collision = checkWallCollision(models, pushback, &wallNormal);
+			Vector wallNormal;
+			bool collision = checkWallCollision(models, &wallNormal);
 
 			if (collision) {
 				float dot = playerDirection.normalize().dot(wallNormal.normalize());
@@ -288,66 +237,75 @@ void Player::update(float dtime, Camera& cam, std::list<BaseModel*>& models)
 
 				resolveCollision(dot, wallNormal, totalTransform, models);
 
-				player->transform(totalTransform);
-				updateBoundingBox();
-				playerDirection = -player->transform().up().normalize();
+				//player->transform(totalTransform);
+				//updateBoundingBox();
+				//playerDirection = -player->transform().up().normalize(); //Negativer Up-Vektor ist der Forward-Vektor
 
 			}
 
 			else {
-				// Bewegung anwenden
 				totalTransform = totalTransform * Matrix().translation(intendedMove);
-
 			}
 
 		
+		Matrix testTRotationTransform = totalTransform * playerRot;
 
-		Matrix testTransform = totalTransform * playerRot;
-
-		if (!rotationWouldCauseCollision(models, testTransform)) {
-			// Rotation erlaubt → anwenden
-			totalTransform = testTransform;
+		if (!rotationWouldCauseCollision(models, testTRotationTransform)) {
+			totalTransform = testTRotationTransform;
 		}
 		else {
-			// Rotation würde Kollision verursachen → nicht drehen
-			std::cout << "Rotation blockiert wegen möglicher Kollision." << std::endl;
+		//	std::cout << "Rotation blockiert wegen möglicher Kollision." << std::endl;
 		}
 
 		player->transform(totalTransform);
-		Matrix finalTransform = player->transform();
-		playerDirection = -finalTransform.up().normalize();
+		playerDirection = -totalTransform.up().normalize(); //Negativer Up-Vektor ist der Forward-Vektor
 
 
 	}
 
-	// BoundingBox aktualisieren
+	updateBoundingBox();
 	updateBoundingBox();
 
-	// Falling Logik bleibt gleich
 	if (isFalling) {
-		std::cout << "Falling" << std::endl;
+		//std::cout << "Falling" << std::endl;
 
 		Matrix trans = player->transform();
 		Matrix playerFall;
-		playerFall.translation(0, 0, -5);
+		playerFall.translation(0, 0, -500 * dtime); //Y und Z sind vertauscht
 		player->transform(trans * playerFall);
 		updateBoundingBox();
 
-		if (BoundingBox.Min.Y < -10.0f) {
+		if (BoundingBox.Min.Y < -5.0f) {
 			isFalling = false;
 			isGrounded = true;
-			resetPosition();
+
+			if (MenuManager::instance().state == MenuState::SinglePlayer) {
+				lives--;
+
+				if (lives > 0) {
+					resetPosition();
+
+				}
+				else {
+					lives = 3;
+					MenuManager::instance().state = MenuState::GameOver;
+				}
+			}
+			else {
+				resetPosition();
+			}
+		
 		}
 	}
 
-	cam.setPosition(playerUrsprung.translation() + Vector(0, 2, 3) - player->transform().forward());
-	cam.setTarget(playerUrsprung.translation());
+	cam.setPosition(player->transform().translation() + Vector(0, 2, 3));
+	cam.setTarget(player->transform().translation());
 }
 
 void Player::draw(const BaseCamera& Cam)
 {
 	player->draw(Cam);
-	//drawBoundingBox(Cam);
+//	drawBoundingBox(Cam);
 	//drawOrientation(Cam); // Hier!
 
 	//drawDirectionVector(Cam);
@@ -356,25 +314,25 @@ void Player::draw(const BaseCamera& Cam)
 
 void Player::resolveCollision(float dot, const Vector& wallNormal, Matrix& totalTransform, const std::list<BaseModel*>& models)
 {
-	std::cout << "[resolveCollision] Dot: " << dot << std::endl;
+	//std::cout << "[resolveCollision] Dot: " << dot << std::endl;
 
 	// Fall 1: Frontal gegen Wand
 	if (dot < -0.9f) {
-		std::cout << "Frontal gegen Wand → versuche Wegdrehung" << std::endl;
+		//std::cout << "Frontal gegen Wand → versuche Wegdrehung" << std::endl;
 		trySafeRotate(wallNormal, totalTransform, models, 180.0f);
 	}
 
 
 	// Fall 2: Schräge Kollision → leicht wegdrehen
 	else if (dot < -0.3f) {
-		std::cout << "Schräge Kollision → leichte Drehung" << std::endl;
+		//std::cout << "Schräge Kollision → leichte Drehung" << std::endl;
 		trySafeRotate(wallNormal, totalTransform, models, 30.0f);
 
 	}
 
 	// Fall 3: Seitlich → entlang Wand gleiten
 	else if (std::abs(dot) < 0.9f) {
-		std::cout << "Schräge Kollision → versuche adaptive Rotation" << std::endl;
+		//std::cout << "Schräge Kollision → versuche adaptive Rotation" << std::endl;
 		trySafeRotate(wallNormal, totalTransform, models, 15.0f);
 
 	}
@@ -394,7 +352,7 @@ void Player::trySafeRotate(const Vector& wallNormal, Matrix& totalTransform, con
 {
 	Vector currentDir = playerDirection.normalize();
 	Vector cross = currentDir.cross(wallNormal);
-	float direction = (cross.Z >= 0) ? 1.0f : -1.0f;
+	float direction = (cross.Z >= 0) ? 1.0f : -1.0f; //Z und Y sind vertauscht -> Drehung um Y-Achse
 
 	float stepSize = 1.0f;
 	float currentAngle = maxAngleDeg * direction;
@@ -439,60 +397,49 @@ bool Player::checkGroundCollision(std::list<BaseModel*>& models)
 
 	isGrounded = false;
 	isFalling = true;
-	std::cout << "No ground collision (foot box)" << std::endl;
+	//std::cout << "No ground collision" << std::endl;
 	return false;
 }
 
-
-
-
-
-bool Player::checkIfOnEndPlatform(std::list<BaseModel*>& models)
-{
-	for (BaseModel* model : models) {
-		if (model != this && model->isEndPlatform) {
-			const AABB& modelBox = model->getBoundingBox();
-			bool collision = (this->BoundingBox.Min.X <= modelBox.Max.X && this->BoundingBox.Max.X >= modelBox.Min.X) &&
-				(this->BoundingBox.Min.Y <= modelBox.Max.Y && this->BoundingBox.Max.Y >= modelBox.Min.Y) &&
-				(this->BoundingBox.Min.Z <= modelBox.Max.Z && this->BoundingBox.Max.Z >= modelBox.Min.Z);
-
-			if (collision) {
-				std::cout << "Ende erreicht!" << std::endl;
-				return true;
-			}
-		}
-	}
-	return false;
-}
 
 Vector Player::getPosition() const {
 	const Matrix& transform = player->transform();
-	return Vector(transform.m[12], transform.m[13], transform.m[14]);
+	return Vector(transform.translation());
 }
 
-bool Player::checkWallCollision(const std::list<BaseModel*>& models, Vector& pushback, Vector* wallNormalOut)
-{
-	AABB futureBox = BoundingBox;
 
+/**
+ *
+ * Diese Methode durchläuft alle übergebenen Modelle und überprüft,
+ * ob die Axis-Aligned Bounding Box (AABB) des Spielers mit der
+ * Bounding Box eines Wandmodells überschneidet. Falls eine
+ * Kollision erkannt wird, wird die Normalenrichtung der
+ * Wandoberfläche zurückgegeben.
+ *
+ * @param models      Liste aller Modelle in der Szene, die auf Kollision
+ *                    überprüft werden sollen.
+ * @param wallNormalOut Zeiger auf einen Vektor, in den die Oberflächennormale
+ *                      der kollidierten Wand geschrieben wird.
+ *
+ * @return true, wenn eine Kollision mit einer Wand vorliegt,
+ *         andernfalls false.
+ *
+ */
+bool Player::checkWallCollision(const std::list<BaseModel*>& models, Vector* wallNormalOut)
+{
 
 	for (BaseModel* model : models) {
 		if (model != this && model->isWall) {
 			const AABB& wallBox = model->getBoundingBox();
 
-			bool collision = (futureBox.Min.X <= wallBox.Max.X && futureBox.Max.X >= wallBox.Min.X) &&
-				(futureBox.Min.Y <= wallBox.Max.Y && futureBox.Max.Y >= wallBox.Min.Y) &&
-				(futureBox.Min.Z <= wallBox.Max.Z && futureBox.Max.Z >= wallBox.Min.Z);
+			bool collision = (BoundingBox.Min.X <= wallBox.Max.X && BoundingBox.Max.X >= wallBox.Min.X) &&
+				(BoundingBox.Min.Y <= wallBox.Max.Y && BoundingBox.Max.Y >= wallBox.Min.Y) &&
+				(BoundingBox.Min.Z <= wallBox.Max.Z && BoundingBox.Max.Z >= wallBox.Min.Z);
 
 			if (collision) {
-				std::cout << "Wand Kollision!" << std::endl;
+				//std::cout << "Wand Kollision!" << std::endl;
 
-				pushback = Vector(0, 0, 0);
-				float pushStrength = 2.0f;
-
-				if (wallNormalOut != nullptr)
 					*wallNormalOut = model->getSurfaceNormal();
-
-
 
 				return true;
 			}
