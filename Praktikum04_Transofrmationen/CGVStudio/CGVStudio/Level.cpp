@@ -1,3 +1,5 @@
+//Quelle: C++-Projekt “ZufallswegGenerator” aus dem 5. Praktikumsblatt, von Philipp Lensing, Modul Spieleprogrammierung & 3D-Animation 24/25
+
 #include "Level.h"
 #include "Plattform.h"
 #include <cstdlib>

@@ -1,3 +1,5 @@
+//Quelle: https://learnopengl.com/In-Practice/2D-Game/Particles
+
 #include <cstdlib>
 #include <GL/glew.h>
 #include <cmath>
@@ -6,6 +8,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "ParticelSystem.h"
+
 
 static float RandomFloat(float min, float max) {
     return min + static_cast<float>(rand()) / RAND_MAX * (max - min);

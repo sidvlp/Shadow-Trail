@@ -1,3 +1,5 @@
+//Quelle: https://learnopengl.com/In-Practice/2D-Game/Particles
+
 #include "ParticleShader.h"
 
 const char* VertexShader = R"(

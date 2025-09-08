@@ -1,3 +1,11 @@
+//Dear ImGui
+//Quelle: https://github.com/ocornut/imgui
+//Quelle: https://www.youtube.com/watch?v=Nrta_J_c9Cc
+
+//miniaudio
+//Quelle: https://miniaud.io/docs/manual/index.html#Engine
+//Quelle: https://github.com/mackron/miniaudio
+
 #include "MenuManager.h"
 #include <stdlib.h>
 #include <iostream>
@@ -267,6 +275,7 @@ void MenuManager::centerWindowStart(const char* title) {
 }
 
 
+// Wellen-Animation mit Hilfe von ChatGPT siehe Readme
 
 void MenuManager::DrawWaveText(const char* text) {
     float time = ImGui::GetTime();

@@ -6,6 +6,9 @@
 //  Copyright © 2016 Philipp Lensing. All rights reserved.
 //
 
+
+// Dark-Path Effekt mit Hilfe von ChatGPT siehe Readme
+
 #include "PhongShader.h"
 #include "../CGVStudio/CGVStudio/ShaderLightMapper.h"
 
